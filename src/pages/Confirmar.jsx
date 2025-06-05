@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { db } from "../firebase";
+import { db } from "../firebaseConfig";
 import { doc, getDoc, updateDoc, setDoc, arrayUnion, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth } from "../firebaseConfig";
 import { registrarAccion } from '../utils/registrarAccion';
 
 function Confirmar({ confirmarAsistencia }) {

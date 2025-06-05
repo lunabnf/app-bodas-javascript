@@ -20,7 +20,7 @@ ChartJS.register(
   Legend,
   ArcElement
 );
-import { db } from "../firebase";
+import { db } from "../firebaseConfig";
 import {
   collection,
   getDocs,

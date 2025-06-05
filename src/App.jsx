@@ -21,7 +21,7 @@ import './App.css';
 import { auth, provider } from './firebase';
 import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, collection, getDocs, setDoc, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from './firebase'; // Asegúrate de tener db exportado desde firebase.js
+import { db } from './firebase';
 
 function AppRoot() {
   const [menuOpen, setMenuOpen] = useState(false);

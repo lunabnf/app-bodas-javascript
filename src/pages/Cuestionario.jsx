@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { db } from "../firebase";
+import { db } from "../firebaseConfig";
 import { registrarAccion } from '../utils/registrarAccion';
 import { doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore";
 

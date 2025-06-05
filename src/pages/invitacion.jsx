@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../firebase";
+import { firebaseConfig } from "../firebaseConfig";
 
 initializeApp(firebaseConfig);
 const db = getFirestore();

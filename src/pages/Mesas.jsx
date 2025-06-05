@@ -1,8 +1,8 @@
 // File: src/pages/Mesas.jsx
 import { useState, useEffect } from "react";
-import { db } from "../firebase";
+import { db } from "../firebaseConfig";
 import { doc, getDoc, setDoc, collection, getDocs, writeBatch } from "firebase/firestore";
-import { auth } from "../firebase";
+import { auth } from "../firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
