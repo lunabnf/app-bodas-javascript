@@ -1,0 +1,75 @@
+/* File: src/index.css */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: #222e3a;
+  background: linear-gradient(120deg, #f6f8fc 0%, #e9eef6 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f6f8fc 0%, #e9eef6 100%);
+}
+
+a {
+  font-weight: 500;
+  color: #d72660;
+  text-decoration: inherit;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #ad1457;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 16px;
+  border: none;
+  padding: 0.8em 1.6em;
+  font-size: 1.1em;
+  font-weight: 600;
+  font-family: inherit;
+  background: rgba(255, 182, 193, 0.7);
+  color: #ad1457;
+  cursor: pointer;
+  box-shadow: 0 4px 16px 0 rgba(173, 20, 87, 0.15), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  backdrop-filter: blur(2px);
+}
+button:hover {
+  background: rgba(255, 182, 193, 0.9);
+  box-shadow: 0 8px 24px 0 rgba(173, 20, 87, 0.18), 0 2px 8px 0 rgba(0,0,0,0.10);
+  transform: translateY(-2px) scale(1.03);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto #f8bbd0;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #ad1457;
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+  }
+  a:hover {
+    color: #d72660;
+  }
+  button {
+    background: rgba(255, 182, 193, 0.7);
+    color: #ad1457;
+  }
+}

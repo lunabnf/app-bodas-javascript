@@ -1,0 +1,84 @@
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy
+} from "firebase/firestore";
+
+function Registro() {
+  const [acciones, setAcciones] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const cargarAcciones = async () => {
+      try {
+        const ref = collection(db, "bodas", "bodaPrincipal", "registroAcciones");
+        const q = query(ref, orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        const datos = snapshot.docs.map((doc) => {
+          try {
+            const rawData = doc.data();
+            const data = typeof rawData === "object" && rawData !== null ? rawData : {};
+            return {
+              id: doc.id,
+              nombre: typeof data.nombre === "string" ? data.nombre : "Invitado",
+              accion: typeof data.accion === "string" ? data.accion : "Sin acción",
+              detalles: typeof data.detalles === "string" ? data.detalles : "",
+              timestamp: data.timestamp ?? null,
+            };
+          } catch (e) {
+            console.warn("Documento con error de datos:", doc.id, e);
+            return {
+              id: doc.id,
+              nombre: "Invitado",
+              accion: "Sin acción",
+              detalles: "",
+              timestamp: null,
+            };
+          }
+        });
+        setAcciones(datos);
+      } catch (err) {
+        console.error("Error general cargando acciones:", err);
+        setError("Error cargando acciones");
+      }
+    };
+
+    cargarAcciones();
+  }, []);
+
+  return (
+    <section className="card">
+      <h2>Registro de Actividades</h2>
+      {acciones.map((accion, idx) => (
+        <div
+          key={idx}
+          style={{
+            borderBottom: "1px solid #ccc",
+            marginBottom: "1rem",
+            paddingBottom: "1rem",
+          }}
+        >
+          <strong>{accion.nombre}</strong> —{" "}
+          <em>{accion.accion}</em>
+          <div style={{ fontSize: "0.9em", color: "#555" }}>
+            {accion.timestamp
+              ? accion.timestamp.toDate().toLocaleString()
+              : "Sin fecha"}
+          </div>
+          {accion.detalles ? (
+            <pre style={{ background: "#f9f9f9", padding: "1rem" }}>
+              {JSON.stringify(accion.detalles, null, 2)}
+            </pre>
+          ) : (
+            <p style={{ color: "#999" }}>Sin detalles</p>
+          )}
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export default Registro;

@@ -1,0 +1,290 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  background-color: #F7F3F0;
+  font-family: 'Playfair Display', serif;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+  background-color: #F7F3F0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  font-family: 'Playfair Display', serif;
+}
+
+.read-the-docs {
+  color: #6B4E71;
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #F7F3F0;
+  font-family: 'Playfair Display', serif;
+}
+
+nav.floating-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  background-color: #F7F3F0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+nav.floating-nav a {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background-color: #F3E8EE;
+  text-decoration: none;
+  color: #5C5470;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  font-family: 'Playfair Display', serif;
+}
+
+nav.floating-nav a:hover {
+  background-color: #F7F3F0;
+  transform: translateY(-2px);
+}
+
+.menu-toggle {
+  background-color: #F3E8EE;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #5C5470;
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+}
+
+.floating-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.floating-menu-container nav.floating-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  background-color: #F7F3F0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  max-width: 90%;
+}
+
+ .floating-menu-container nav.floating-nav a {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  background-color: #F3E8EE;
+  text-decoration: none;
+  color: #5C5470;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  font-family: 'Playfair Display', serif;
+}
+
+.floating-menu-container nav.floating-nav a:hover {
+  background-color: #F7F3F0;
+  transform: translateY(-2px);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding-top: 3rem;
+  background-color: #F7F3F0;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #F3E8EE;
+  border-radius: 10px;
+  margin: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.titulo-app {
+  font-family: 'Playfair Display', serif;
+  color: #5C5470;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.vertical-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 1rem 2rem;
+}
+
+.vertical-menu a {
+  margin: 0.3rem 0;
+  padding: 0.6rem 1rem;
+  background-color: #F3E8EE;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #6B4E71;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, background-color 0.2s;
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+}
+
+.vertical-menu a.invitacion-link {
+  background-color: #F3E8EE;
+  color: #6B4E71;
+  font-weight: 500;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s;
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  display: inline-block;
+  width: auto;
+  max-width: none;
+}
+.vertical-menu a.invitacion-link:hover {
+  background-color: #F7F3F0;
+  transform: translateX(5px);
+}
+
+.vertical-menu a:hover {
+  background-color: #F7F3F0;
+  transform: translateX(5px);
+}
+/* Estilo profesional y romántico para nombres de mesa y comensales */
+.mesa-nombre,
+.comensal-etiqueta,
+span.mesa-nombre,
+span.comensal-etiqueta,
+div.mesa-nombre,
+div.comensal-etiqueta {
+  background-color: #FADADD; /* Rosa suave romántico */
+  color: #5C5470; /* Gris romántico para texto */
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: inline-block;
+  margin: 0.3rem;
+}
+
+@media (max-width: 600px) {
+  .floating-menu-container nav.floSating-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+  .floating-menu-container nav.floating-nav a {
+    width: 100%;
+    max-width: 90vw;
+    font-size: 1rem;
+  }
+}
+
+/* Fondo claro y aspecto romántico/profesional para los campos input de texto */
+input[type="text"] {
+  background-color: #FDF6F0;
+  color: #5C5470;
+  border: 1px solid #E2D6D0;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Playfair Display', serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .vertical-menu {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .menu-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .menu-section h3 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .vertical-menu a {
+    width: 90%;
+    max-width: 280px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    background-color: #F3E8EE;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size: 1rem;
+    margin: 0.25rem 0;
+  }
+}
