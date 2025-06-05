@@ -1,7 +1,7 @@
 // File: src/pages/CuentaAtras.jsx
 import { useEffect, useState } from "react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "../../firebaseConfig";
+import { app } from "../firebaseConfig";
 
 function CuentaAtras() {
   const storage = getStorage(app);

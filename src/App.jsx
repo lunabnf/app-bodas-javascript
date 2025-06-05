@@ -18,10 +18,9 @@ import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 
 import './App.css';
-import { auth, provider } from './firebase';
+import { auth, provider } from './firebaseConfig';
 import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, collection, getDocs, setDoc, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from './firebase';
+import { db } from './firebaseConfig';
 
 function AppRoot() {
   const [menuOpen, setMenuOpen] = useState(false);
