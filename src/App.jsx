@@ -16,6 +16,7 @@ import Registro from './pages/Registro';
 import Ranking from './pages/ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
+import Checklist from './pages/Checklist';
 
 import './App.css';
 import { auth, provider } from './firebaseConfig';
@@ -310,6 +311,12 @@ function AppRoot() {
             >
               MODO PRO
             </button>
+            <button
+              className={menuSection === "organizacion" ? "active" : ""}
+              onClick={() => setMenuSection("organizacion")}
+            >
+              ORGANIZACIÓN
+            </button>
           </div>
           {menuSection === "necesitas" && (
             <div className="menu-section">
@@ -338,10 +345,12 @@ function AppRoot() {
               <Link to="/miparticipacion" onClick={() => setMenuOpen(false)}>👤 Mi Participación</Link>
             </div>
           )}
-          {rolUsuario === "admin" && (
+          {menuSection === "organizacion" && (
             <div className="menu-section">
-              <h3>ADMINISTRACIÓN</h3>
+              <h3>ORGANIZACIÓN</h3>
               <Link to="/registro" onClick={() => setMenuOpen(false)}>Registro de acciones</Link>
+              <Link to="/checklist" onClick={() => setMenuOpen(false)}>Checklist de tareas</Link>
+              {/* Aquí puedes añadir más enlaces al panel de administración si lo implementas */}
             </div>
           )}
         </nav>
@@ -406,6 +415,7 @@ function AppRoutes({ setUser, setRolUsuario, setAccesoQRValido, accesoQRValido, 
       <Route path="/ranking" element={<Ranking />} />
       <Route path="/chat" element={<Chat usuario={user?.displayName || "Anónimo"} />} />
       <Route path="/miparticipacion" element={<MiParticipacion />} />
+      <Route path="/checklist" element={<Checklist />} />
     </Routes>
   );
   // 🚀 Complemento futuro: que el QR generado redirija a /miparticipacion con un parámetro único por invitado
