@@ -17,6 +17,7 @@ import Ranking from './pages/ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 import Checklist from './pages/Checklist';
+import Usuarios from './pages/Usuarios';
 
 import './App.css';
 import { auth, provider } from './firebaseConfig';
@@ -281,91 +282,95 @@ function AppRoot() {
   }
 
   return (
-    <Router>
-      <header className="app-header">
-        <h1 className="titulo-app">{nombreBoda}</h1>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-            ☰
-          </button>
-        </div>
-      </header>
-      {menuOpen && (
-        <nav className="floating-nav vertical-menu">
-          <div className="menu-tabs">
-            <button
-              className={menuSection === "necesitas" ? "active" : ""}
-              onClick={() => setMenuSection("necesitas")}
-            >
-              NECESITAS SABER
-            </button>
-            <button
-              className={menuSection === "saberMas" ? "active" : ""}
-              onClick={() => setMenuSection("saberMas")}
-            >
-              PARA SABER MÁS
-            </button>
-            <button
-              className={menuSection === "modoPro" ? "active" : ""}
-              onClick={() => setMenuSection("modoPro")}
-            >
-              MODO PRO
-            </button>
-            <button
-              className={menuSection === "organizacion" ? "active" : ""}
-              onClick={() => setMenuSection("organizacion")}
-            >
-              ORGANIZACIÓN
-            </button>
-          </div>
-          {menuSection === "necesitas" && (
-            <div className="menu-section">
-              <Link to="/programa" onClick={() => setMenuOpen(false)}>Programa</Link>
-              <Link to="/info" onClick={() => setMenuOpen(false)}>Info</Link>
-              <Link to="/confirmar" onClick={() => setMenuOpen(false)}>Confirmar</Link>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
+      <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
+        <Router>
+          <header className="app-header">
+            <h1 className="titulo-app">{nombreBoda}</h1>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+                ☰
+              </button>
             </div>
+          </header>
+          {menuOpen && (
+            <nav className="floating-nav vertical-menu">
+              <div className="menu-tabs">
+                <button
+                  className={menuSection === "necesitas" ? "active" : ""}
+                  onClick={() => setMenuSection("necesitas")}
+                >
+                  NECESITAS SABER
+                </button>
+                <button
+                  className={menuSection === "saberMas" ? "active" : ""}
+                  onClick={() => setMenuSection("saberMas")}
+                >
+                  PARA SABER MÁS
+                </button>
+                <button
+                  className={menuSection === "modoPro" ? "active" : ""}
+                  onClick={() => setMenuSection("modoPro")}
+                >
+                  MODO PRO
+                </button>
+                <button
+                  className={menuSection === "organizacion" ? "active" : ""}
+                  onClick={() => setMenuSection("organizacion")}
+                >
+                  ORGANIZACIÓN
+                </button>
+              </div>
+              {menuSection === "necesitas" && (
+                <div className="menu-section">
+                  <Link to="/programa" onClick={() => setMenuOpen(false)}>Programa</Link>
+                  <Link to="/info" onClick={() => setMenuOpen(false)}>Info</Link>
+                  <Link to="/confirmar" onClick={() => setMenuOpen(false)}>Confirmar</Link>
+                </div>
+              )}
+              {menuSection === "saberMas" && (
+                <div className="menu-section">
+                  <Link to="/mesas" onClick={() => setMenuOpen(false)}>Mesas</Link>
+                  <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)}>Cuenta Atrás</Link>
+                  <Link to="/musica" onClick={() => setMenuOpen(false)}>Música</Link>
+                  <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="invitation-link">Invitación</Link>
+                  <Link to="/ceremonia" onClick={() => setMenuOpen(false)}>Asientos de la Ceremonia</Link>
+                  <Link to="/desplazamiento" onClick={() => setMenuOpen(false)}>Desplazamiento</Link>
+                </div>
+              )}
+              {menuSection === "modoPro" && (
+                <div className="menu-section">
+                  <h3>MODO PRO</h3>
+                  <Link to="/ranking" onClick={() => setMenuOpen(false)}>Ranking de Invitados</Link>
+                  <Link to="/muro" onClick={() => setMenuOpen(false)}>Muro de Fotos</Link>
+                  <Link to="/chat" onClick={() => setMenuOpen(false)}>Chat entre Invitados</Link>
+                  <Link to="/cuestionario" onClick={() => setMenuOpen(false)}>Cuestionario</Link>
+                  <Link to="/miparticipacion" onClick={() => setMenuOpen(false)}>👤 Mi Participación</Link>
+                </div>
+              )}
+              {menuSection === "organizacion" && (
+                <div className="menu-section">
+                  <h3>ORGANIZACIÓN</h3>
+                  <Link to="/registro" onClick={() => setMenuOpen(false)}>Registro de acciones</Link>
+                  <Link to="/checklist" onClick={() => setMenuOpen(false)}>Checklist de tareas</Link>
+                  <Link to="/usuarios" onClick={() => setMenuOpen(false)}>Gestión de usuarios</Link>
+                  {/* Aquí puedes añadir más enlaces al panel de administración si lo implementas */}
+                </div>
+              )}
+            </nav>
           )}
-          {menuSection === "saberMas" && (
-            <div className="menu-section">
-              <Link to="/mesas" onClick={() => setMenuOpen(false)}>Mesas</Link>
-              <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)}>Cuenta Atrás</Link>
-              <Link to="/musica" onClick={() => setMenuOpen(false)}>Música</Link>
-              <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="invitation-link">Invitación</Link>
-              <Link to="/ceremonia" onClick={() => setMenuOpen(false)}>Asientos de la Ceremonia</Link>
-              <Link to="/desplazamiento" onClick={() => setMenuOpen(false)}>Desplazamiento</Link>
-            </div>
-          )}
-          {menuSection === "modoPro" && (
-            <div className="menu-section">
-              <h3>MODO PRO</h3>
-              <Link to="/ranking" onClick={() => setMenuOpen(false)}>Ranking de Invitados</Link>
-              <Link to="/muro" onClick={() => setMenuOpen(false)}>Muro de Fotos</Link>
-              <Link to="/chat" onClick={() => setMenuOpen(false)}>Chat entre Invitados</Link>
-              <Link to="/cuestionario" onClick={() => setMenuOpen(false)}>Cuestionario</Link>
-              <Link to="/miparticipacion" onClick={() => setMenuOpen(false)}>👤 Mi Participación</Link>
-            </div>
-          )}
-          {menuSection === "organizacion" && (
-            <div className="menu-section">
-              <h3>ORGANIZACIÓN</h3>
-              <Link to="/registro" onClick={() => setMenuOpen(false)}>Registro de acciones</Link>
-              <Link to="/checklist" onClick={() => setMenuOpen(false)}>Checklist de tareas</Link>
-              {/* Aquí puedes añadir más enlaces al panel de administración si lo implementas */}
-            </div>
-          )}
-        </nav>
-      )}
-
-      <AppRoutes
-        setUser={setUser}
-        setRolUsuario={setRolUsuario}
-        setAccesoQRValido={setAccesoQRValido}
-        accesoQRValido={accesoQRValido}
-        user={user}
-        rolUsuario={rolUsuario}
-        ejecutarCargaUsuarios={ejecutarCargaUsuarios}
-      />
-    </Router>
+          <AppRoutes
+            setUser={setUser}
+            setRolUsuario={setRolUsuario}
+            setAccesoQRValido={setAccesoQRValido}
+            accesoQRValido={accesoQRValido}
+            user={user}
+            rolUsuario={rolUsuario}
+            ejecutarCargaUsuarios={ejecutarCargaUsuarios}
+          />
+        </Router>
+      </div>
+    </div>
   );
 }
 
@@ -416,6 +421,7 @@ function AppRoutes({ setUser, setRolUsuario, setAccesoQRValido, accesoQRValido, 
       <Route path="/chat" element={<Chat usuario={user?.displayName || "Anónimo"} />} />
       <Route path="/miparticipacion" element={<MiParticipacion />} />
       <Route path="/checklist" element={<Checklist />} />
+      <Route path="/usuarios" element={<Usuarios />} />
     </Routes>
   );
   // 🚀 Complemento futuro: que el QR generado redirija a /miparticipacion con un parámetro único por invitado

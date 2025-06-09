@@ -5,6 +5,10 @@ import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
+      <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
+        <App />
+      </div>
+    </div>
   </StrictMode>,
 );
