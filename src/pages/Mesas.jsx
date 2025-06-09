@@ -211,6 +211,12 @@ function Mesas() {
     }
   };
 
+  // --- Obtener el objeto usuario con rol ---
+  // El usuario puede venir de props, contexto, o del propio user (firebase)
+  // Para este ejemplo, asumimos que el rol está en user.rol.
+  // Si no, puedes adaptar la obtención del objeto usuario aquí.
+  const usuario = user && user.rol ? user : { rol: "invitado" };
+
   return (
     <section className="card" style={{ background: "rgba(255,255,255,0.95)" }}>
       <h2>Mesas del Gran Salón</h2>
@@ -286,14 +292,17 @@ function Mesas() {
           {confirmados.map((invitado, idx) => (
             <div
               key={idx}
-              draggable
-              onDragStart={() => setInvitadoArrastrado(invitado.nombre)}
+              draggable={usuario.rol === "admin" || usuario.rol === "moderador"}
+              onDragStart={() => {
+                if (usuario.rol !== "admin" && usuario.rol !== "moderador") return;
+                setInvitadoArrastrado(invitado.nombre);
+              }}
               style={{
                 background: "#fff",
                 padding: "0.5em 1em",
                 borderRadius: "1em",
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                cursor: "grab",
+                cursor: usuario.rol === "admin" || usuario.rol === "moderador" ? "grab" : "not-allowed",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -311,9 +320,11 @@ function Mesas() {
         </div>
       </div>
       <div style={{ marginBottom: "1em" }}>
-        <button onClick={exportarPDF} style={{ marginRight: "1em", background: "#5e60ce", color: "#fff", padding: "0.5em 1em", borderRadius: "0.5em", border: "none" }}>
-          📄 Exportar a PDF
-        </button>
+        {(usuario.rol === "admin" || usuario.rol === "moderador") && (
+          <button onClick={exportarPDF} style={{ marginRight: "1em", background: "#5e60ce", color: "#fff", padding: "0.5em 1em", borderRadius: "0.5em", border: "none" }}>
+            📄 Exportar a PDF
+          </button>
+        )}
         <button onClick={handleAddMesa} style={{ marginRight: "1em" }}>
           ➕ Añadir mesa
         </button>
@@ -334,6 +345,7 @@ function Mesas() {
             key={mesaIdx}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => {
+              if (usuario.rol !== "admin" && usuario.rol !== "moderador") return;
               if (!invitadoArrastrado) return;
               setMesas((prev) =>
                 prev.map((mesa, idx) => {
@@ -434,8 +446,11 @@ function Mesas() {
                     onChange={(e) =>
                       handleNombreComensal(mesaIdx, comensalIdx, e.target.value)
                     }
-                    onDragStart={() => setInvitadoArrastrado(nombre)}
-                    draggable
+                    onDragStart={() => {
+                      if (usuario.rol !== "admin" && usuario.rol !== "moderador") return;
+                      setInvitadoArrastrado(nombre);
+                    }}
+                    draggable={usuario.rol === "admin" || usuario.rol === "moderador"}
                     style={{
                       width: 80,
                       marginTop: "0.2em",
@@ -443,6 +458,7 @@ function Mesas() {
                       border: "1px solid #cfd8dc",
                       padding: "0.2em 0.4em",
                       textAlign: "center",
+                      cursor: usuario.rol === "admin" || usuario.rol === "moderador" ? "grab" : "not-allowed",
                     }}
                   />
                 </div>
@@ -475,53 +491,55 @@ function Mesas() {
       >
         🪑
       </div>
-      <div style={{ marginTop: "2rem", textAlign: "center" }}>
-        <select
-          value={opcionEliminacion}
-          onChange={(e) => setOpcionEliminacion(e.target.value)}
-          style={{
-            padding: "0.5rem",
-            marginBottom: "1rem",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            fontSize: "1rem"
-          }}
-        >
-          <option value="todas">Eliminar TODAS las mesas</option>
-          <option value="comensales">Eliminar SOLO los comensales</option>
-          <option value="numero">Eliminar cierto número de mesas</option>
-        </select>
-        {opcionEliminacion === "numero" && (
-          <input
-            type="number"
-            min="1"
-            max={mesas.length}
-            value={numeroMesasAEliminar}
-            onChange={(e) => setNumeroMesasAEliminar(Number(e.target.value))}
+      {(usuario.rol === "admin") && (
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+          <select
+            value={opcionEliminacion}
+            onChange={(e) => setOpcionEliminacion(e.target.value)}
             style={{
               padding: "0.5rem",
-              marginLeft: "1rem",
+              marginBottom: "1rem",
               borderRadius: "8px",
               border: "1px solid #ccc",
-              width: "80px"
+              fontSize: "1rem"
             }}
-          />
-        )}
-        <button
-          onClick={manejarEliminacionMesas}
-          style={{
-            backgroundColor: "#c62828",
-            color: "white",
-            border: "none",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginLeft: "1rem"
-          }}
-        >
-          🗑️ Confirmar eliminación
-        </button>
-      </div>
+          >
+            <option value="todas">Eliminar TODAS las mesas</option>
+            <option value="comensales">Eliminar SOLO los comensales</option>
+            <option value="numero">Eliminar cierto número de mesas</option>
+          </select>
+          {opcionEliminacion === "numero" && (
+            <input
+              type="number"
+              min="1"
+              max={mesas.length}
+              value={numeroMesasAEliminar}
+              onChange={(e) => setNumeroMesasAEliminar(Number(e.target.value))}
+              style={{
+                padding: "0.5rem",
+                marginLeft: "1rem",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                width: "80px"
+              }}
+            />
+          )}
+          <button
+            onClick={manejarEliminacionMesas}
+            style={{
+              backgroundColor: "#c62828",
+              color: "white",
+              border: "none",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "8px",
+              cursor: "pointer",
+              marginLeft: "1rem"
+            }}
+          >
+            🗑️ Confirmar eliminación
+          </button>
+        </div>
+      )}
     </section>
   );
 }

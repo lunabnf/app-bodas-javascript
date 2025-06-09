@@ -5,6 +5,26 @@ import { collection, getDocs } from "firebase/firestore";
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
 
+  const [administradores, setAdministradores] = useState([]);
+  const [nuevoAdmin, setNuevoAdmin] = useState("");
+
+  const [moderadores, setModeradores] = useState([]);
+  const [nuevoMod, setNuevoMod] = useState("");
+
+  const agregarAdmin = () => {
+    if (nuevoAdmin.trim()) {
+      setAdministradores(prev => [...prev, nuevoAdmin.trim()]);
+      setNuevoAdmin("");
+    }
+  };
+
+  const agregarMod = () => {
+    if (nuevoMod.trim()) {
+      setModeradores(prev => [...prev, nuevoMod.trim()]);
+      setNuevoMod("");
+    }
+  };
+
   useEffect(() => {
     const fetchUsuarios = async () => {
       const usuariosRef = collection(db, "bodas/bodaPrincipal/accesosQR");
@@ -78,6 +98,16 @@ export default function Usuarios() {
                   <option value="novia">Novia</option>
                   <option value="novio">Novio</option>
                 </select>
+                <select
+                  value={usuario.rol || ""}
+                  onChange={e => updateUsuario(usuario.id, 'rol', e.target.value)}
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                >
+                  <option value="">Sin rol</option>
+                  <option value="admin">Administrador</option>
+                  <option value="moderador">Moderador</option>
+                  <option value="invitado">Invitado</option>
+                </select>
                 <label className="inline-flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -125,6 +155,16 @@ export default function Usuarios() {
                   <option value="novia">Novia</option>
                   <option value="novio">Novio</option>
                 </select>
+                <select
+                  value={usuario.rol || ""}
+                  onChange={e => updateUsuario(usuario.id, 'rol', e.target.value)}
+                  className="w-full border border-gray-300 rounded px-2 py-1"
+                >
+                  <option value="">Sin rol</option>
+                  <option value="admin">Administrador</option>
+                  <option value="moderador">Moderador</option>
+                  <option value="invitado">Invitado</option>
+                </select>
                 <label className="inline-flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -143,6 +183,58 @@ export default function Usuarios() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <h2 className="text-xl font-semibold mb-4 text-yellow-700">👑 Administradores</h2>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            value={nuevoAdmin}
+            onChange={e => setNuevoAdmin(e.target.value)}
+            placeholder="Nombre del administrador"
+            className="border px-2 py-1 rounded w-full"
+          />
+          <button
+            onClick={agregarAdmin}
+            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded"
+          >
+            Añadir
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {administradores.map((admin, idx) => (
+            <span key={idx} className="bg-yellow-200 text-yellow-900 px-3 py-1 rounded">
+              {admin}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4 text-purple-700">🛡️ Moderadores</h2>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            value={nuevoMod}
+            onChange={e => setNuevoMod(e.target.value)}
+            placeholder="Nombre del moderador"
+            className="border px-2 py-1 rounded w-full"
+          />
+          <button
+            onClick={agregarMod}
+            className="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded"
+          >
+            Añadir
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {moderadores.map((mod, idx) => (
+            <span key={idx} className="bg-purple-200 text-purple-900 px-3 py-1 rounded">
+              {mod}
+            </span>
+          ))}
         </div>
       </div>
     </div>

@@ -18,18 +18,39 @@ const generarAsientos = (lado) => {
 const Ceremonia = () => {
   const [asientosNovio, setAsientosNovio] = useState(generarAsientos("N"));
   const [asientosNovia, setAsientosNovia] = useState(generarAsientos("V"));
+  const [confirmados, setConfirmados] = useState([]);
 
   const userData = { rol: "admin" }; // temporal mientras no se use AuthContext
   const esAdmin = userData?.rol === "admin";
 
   useEffect(() => {
     const fetchData = async () => {
-      const docRef = doc(db, "ceremonia", "asientos");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
+      const asientosRef = doc(db, "ceremonia", "asientos");
+      const confirmacionesRef = doc(db, "bodas", "bodaPrincipal");
+
+      const [asientosSnap, confirmacionesSnap] = await Promise.all([
+        getDoc(asientosRef),
+        getDoc(confirmacionesRef),
+      ]);
+
+      if (asientosSnap.exists()) {
+        const data = asientosSnap.data();
         setAsientosNovio(data.asientosNovio || generarAsientos("N"));
         setAsientosNovia(data.asientosNovia || generarAsientos("V"));
+      }
+
+      if (confirmacionesSnap.exists()) {
+        const data = confirmacionesSnap.data();
+        const confirmadosTodos = data.confirmaciones || [];
+
+        // Filtrar los que ya están colocados
+        const colocados = [
+          ...(asientosSnap.data()?.asientosNovio || []),
+          ...(asientosSnap.data()?.asientosNovia || []),
+        ].map((a) => a.nombre).filter(Boolean);
+
+        const libres = confirmadosTodos.filter((n) => !colocados.includes(n));
+        setConfirmados(libres);
       }
     };
     fetchData();
@@ -44,9 +65,10 @@ const Ceremonia = () => {
   };
 
   const handleClick = async (id, lado) => {
-    if (!esAdmin) return;
-    const nombre = prompt("¿Quién se sienta aquí?");
-    if (!nombre) return;
+    if (!esAdmin || confirmados.length === 0) return;
+    const nombre = prompt("Escribe el nombre exacto a colocar o copia desde arriba:");
+    if (!nombre || !confirmados.includes(nombre)) return alert("Nombre no válido.");
+
     if (lado === "N") {
       const nuevos = asientosNovio.map((a) =>
         a.id === id ? { ...a, nombre } : a
@@ -60,11 +82,53 @@ const Ceremonia = () => {
       setAsientosNovia(nuevos);
       await guardarEnFirestore(asientosNovio, nuevos);
     }
+
+    // Quitar el nombre ya usado
+    setConfirmados((prev) => prev.filter((n) => n !== nombre));
+  };
+
+  const handleDrop = async (nombre, id, lado) => {
+    if (!esAdmin || !confirmados.includes(nombre)) return;
+    if (lado === "N") {
+      const nuevos = asientosNovio.map((a) =>
+        a.id === id ? { ...a, nombre } : a
+      );
+      setAsientosNovio(nuevos);
+      await guardarEnFirestore(nuevos, asientosNovia);
+    } else {
+      const nuevos = asientosNovia.map((a) =>
+        a.id === id ? { ...a, nombre } : a
+      );
+      setAsientosNovia(nuevos);
+      await guardarEnFirestore(asientosNovio, nuevos);
+    }
+    setConfirmados((prev) => prev.filter((n) => n !== nombre));
   };
 
   return (
     <div style={{ padding: "1rem", textAlign: "center" }}>
       <h2>Plano de la Ceremonia</h2>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <h3>Invitados por ubicar</h3>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "1rem" }}>
+          {confirmados.map((nombre) => (
+            <div
+              key={nombre}
+              draggable
+              onDragStart={(e) => e.dataTransfer.setData("text/plain", nombre)}
+              style={{
+                padding: "0.5rem 1rem",
+                backgroundColor: "#e0f7fa",
+                borderRadius: "1rem",
+                cursor: "grab",
+              }}
+            >
+              {nombre}
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div style={{ margin: "2rem 0" }}>
         <div><strong>Maestro de ceremonias</strong></div>
@@ -88,6 +152,12 @@ const Ceremonia = () => {
                 key={a.id}
                 className="asiento"
                 onClick={esAdmin ? () => handleClick(a.id, "N") : undefined}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const nombre = e.dataTransfer.getData("text/plain");
+                  handleDrop(nombre, a.id, "N");
+                }}
                 title={a.nombre || "Vacío"}
               >
                 {a.id}
@@ -104,6 +174,12 @@ const Ceremonia = () => {
                 key={a.id}
                 className="asiento"
                 onClick={esAdmin ? () => handleClick(a.id, "V") : undefined}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const nombre = e.dataTransfer.getData("text/plain");
+                  handleDrop(nombre, a.id, "V");
+                }}
                 title={a.nombre || "Vacío"}
               >
                 {a.id}
