@@ -52,6 +52,15 @@ export default function MiParticipacion() {
           }
         });
 
+        // Ceremonia
+        const ceremonia = data.ceremonia || {};
+        let asientoCeremonia = "No asignado";
+        Object.entries(ceremonia).forEach(([zona, datos]) => {
+          if (datos.personas?.includes(id)) {
+            asientoCeremonia = zona;
+          }
+        });
+
         setParticipacion({
           nombre: id,
           mesa: mesaAsignada || "No asignada",
@@ -61,7 +70,7 @@ export default function MiParticipacion() {
           fotoSubida: data.fotos?.[id] ? "Sí" : "No",
           asistencia: haConfirmado,
           desplazamiento,
-          asientoCeremonia: "No asignado",
+          asientoCeremonia,
         });
       }
     };
