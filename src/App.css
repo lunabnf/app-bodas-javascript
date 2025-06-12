@@ -350,3 +350,16 @@ input[type="text"] {
   background-color: #fdf9f6;
   transform: translateY(-3px);
 }
+
+/* Desactivar efectos hover en dispositivos táctiles para menú flotante y botón toggle */
+@media (hover: none) and (pointer: coarse) {
+  .menu-toggle:hover,
+  .floating-menu-container nav.floating-nav a:hover {
+    background-color: #F3E8EE !important;
+    transform: none !important;
+  }
+  .floating-menu-container nav.floating-nav a:active {
+    background-color: #F3E8EE !important;
+    transform: none !important;
+  }
+}

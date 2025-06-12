@@ -1,162 +1,65 @@
-import React, { useState, useRef } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import "./Mesas.css";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
-import { db } from "../firebase";
+.confirmados-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
 
-const Mesas = ({ esAdmin }) => {
-  const [confirmados, setConfirmados] = useState([]);
-  const [nuevoNombre, setNuevoNombre] = useState("");
-  const [mesas, setMesas] = useState({
-    // Ejemplo inicial: puedes cargar esto desde la base de datos si es necesario
-    Mesa1: [],
-    Mesa2: [],
-    Mesa3: [],
-  });
-  const exportRef = useRef(null);
+.confirmado {
+  background-color: #e3f2fd;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+  transition: background-color 0.2s;
+}
 
-  const handleAgregarManual = async () => {
-    const nombre = nuevoNombre.trim();
-    if (nombre && !confirmados.includes(nombre)) {
-      setConfirmados((prev) => [...prev, nombre]);
-      setNuevoNombre("");
+.confirmado:hover {
+  background-color: #bbdefb;
+}
 
-      const docRef = doc(db, "bodas", "bodaPrincipal");
-      const docSnap = await getDoc(docRef);
+.mesas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
 
-      if (docSnap.exists()) {
-        await updateDoc(docRef, {
-          confirmaciones: arrayUnion(nombre),
-        });
-      }
-    }
-  };
+.mesa {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 160px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
 
-  const exportarDibujoMesasPDF = async () => {
-    if (!exportRef.current) return;
+.mesa:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-    const canvas = await html2canvas(exportRef.current);
-    const imgData = canvas.toDataURL("image/png");
+.comensal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f6f6f6;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  margin-bottom: 0.25rem;
+}
 
-    const pdf = new jsPDF("landscape", "mm", "a4");
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+.btn-desasignar {
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("distribucion-mesas.pdf");
-  };
-
-  // Maneja la desasignación de un comensal de cualquier mesa
-  const handleDesasignar = (nombre) => {
-    // Quita de mesas
-    const nuevasMesas = {};
-    for (const [mesa, comensales] of Object.entries(mesas)) {
-      nuevasMesas[mesa] = comensales.filter((n) => n !== nombre);
-    }
-    setMesas(nuevasMesas);
-
-    // Vuelve a añadir al listado de confirmados si no estaba
-    setConfirmados((prev) => (prev.includes(nombre) ? prev : [...prev, nombre]));
-  };
-
-  return (
-    <div>
-      {/* Formulario para añadir comensales manualmente */}
-      {esAdmin && (
-        <div style={{ marginBottom: "1rem", textAlign: "center" }}>
-          <input
-            type="text"
-            placeholder="Añadir comensal manual"
-            value={nuevoNombre}
-            onChange={(e) => setNuevoNombre(e.target.value)}
-            style={{ padding: "0.5rem", marginRight: "0.5rem", borderRadius: "6px", border: "1px solid #ccc" }}
-          />
-          <button
-            onClick={handleAgregarManual}
-            style={{ padding: "0.5rem 1rem", backgroundColor: "#4caf50", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer" }}
-          >
-            Añadir
-          </button>
-        </div>
-      )}
-
-      {/* Botón para exportar dibujo de mesas a PDF */}
-      {esAdmin && (
-        <div style={{ textAlign: "center", marginTop: "1rem" }}>
-          <button
-            onClick={exportarDibujoMesasPDF}
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#2196f3",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            Exportar dibujo de mesas a PDF
-          </button>
-        </div>
-      )}
-
-      {/* Zona visual de distribución de mesas */}
-      <div ref={exportRef}>
-        {/* Zona superior de invitados por arrastrar */}
-        {(() => {
-          // Extrae los nombres ya asignados a mesas (si existen)
-          const nombresAsignados = Object.values(mesas).flat();
-          const nombresDisponibles = confirmados.filter(
-            (nombre) => !nombresAsignados.includes(nombre)
-          );
-          return (
-            <div className="confirmados-container">
-              {nombresDisponibles.map((nombre, index) => (
-                <div key={index} className="confirmado">
-                  {nombre}
-                </div>
-              ))}
-            </div>
-          );
-        })()}
-
-        {/* Representación gráfica de las mesas y los invitados */}
-        <div className="mesas-container" style={{ display: "flex", gap: "2rem", marginTop: "2rem", justifyContent: "center" }}>
-          {Object.entries(mesas).map(([mesa, comensales]) => (
-            <div key={mesa} className="mesa" style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "1rem", minWidth: "160px" }}>
-              <div style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>{mesa}</div>
-              <div>
-                {comensales.map((nombre) => (
-                  <div key={nombre} className="comensal" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.25rem", background: "#f6f6f6", borderRadius: "4px", padding: "0.3rem 0.5rem" }}>
-                    <span>{nombre}</span>
-                    {esAdmin && (
-                      <button
-                        onClick={() => handleDesasignar(nombre)}
-                        className="btn-desasignar"
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          color: "#e74c3c",
-                          fontSize: "1.1em",
-                          cursor: "pointer",
-                        }}
-                        title="Desasignar"
-                      >
-                        ❌
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Resto del componente */}
-    </div>
-  );
-};
-
-export default Mesas;
+.btn-desasignar:hover {
+  transform: scale(1.2);
+}

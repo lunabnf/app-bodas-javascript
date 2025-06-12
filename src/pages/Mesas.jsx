@@ -103,11 +103,13 @@ function Mesas() {
         const data = snap.data();
         const confirmaciones = data.confirmaciones || {};
         const lista = Object.entries(confirmaciones)
-          .map(([id, conf]) => ({
-            id,
-            nombre: conf.detalles?.[0]?.nombre || "",
-            agregadoPor: conf.agregadoPor || "",
-          }))
+          .flatMap(([id, conf]) => {
+            return (conf.detalles || []).map((det, i) => ({
+              id: `${id}_${i}`,
+              nombre: det.nombre || "",
+              agregadoPor: conf.agregadoPor || "",
+            }));
+          })
           .filter((item) => item.nombre !== "");
         setConfirmados(lista);
       }
@@ -297,8 +299,19 @@ function Mesas() {
                 if (usuario.rol !== "admin" && usuario.rol !== "moderador") return;
                 setInvitadoArrastrado(invitado.nombre);
               }}
+              onTouchStart={() => {
+                if (usuario.rol !== "admin" && usuario.rol !== "moderador") return;
+                setInvitadoArrastrado(invitado.nombre);
+              }}
+              onTouchEnd={() => {
+                setTimeout(() => setInvitadoArrastrado(null), 300);
+              }}
               style={{
-                background: "#fff",
+                background: mesas.some((mesa) =>
+                  mesa.comensales.includes(invitado.nombre)
+                )
+                  ? "#e0f7fa"
+                  : "#fff",
                 padding: "0.5em 1em",
                 borderRadius: "1em",
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
@@ -306,7 +319,8 @@ function Mesas() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                fontSize: "0.95em"
+                fontSize: "0.95em",
+                touchAction: "none"
               }}
             >
               {invitado.nombre}

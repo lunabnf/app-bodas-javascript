@@ -97,6 +97,35 @@ function MuroDeFotos() {
     }
   };
 
+  const vaciarMuro = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'fotosMuro'));
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data();
+        // Eliminar de Firestore
+        await deleteDoc(doc.ref);
+        // Eliminar de Storage
+        const storage = getStorage();
+        const pathStart = data.url.indexOf('/o/') + 3;
+        const pathEnd = data.url.indexOf('?alt=');
+        const encodedPath = data.url.substring(pathStart, pathEnd);
+        const filePath = decodeURIComponent(encodedPath);
+        const storageRef = ref(storage, filePath);
+        await deleteObject(storageRef);
+      }
+      setFotosSubidas([]);
+      alert("Muro de fotos vaciado correctamente.");
+    } catch (error) {
+      console.error("Error vaciando el muro:", error);
+    }
+  };
+
+  const handleComentario = (idx, texto) => {
+    const nuevasFotos = [...fotosSubidas];
+    nuevasFotos[idx].comentarios = [...(nuevasFotos[idx].comentarios || []), { usuario: usuarioNombre, texto }];
+    setFotosSubidas(nuevasFotos);
+  };
+
   return (
     <section className="card">
       <h1>Muro de Fotos 📸</h1>
@@ -112,6 +141,11 @@ function MuroDeFotos() {
             style={{ width: '100%', marginTop: '0.5rem' }}
           />
           <button onClick={handleSubirFoto} style={{ marginTop: '0.5rem' }}>Subir Foto</button>
+          {esAdmin && (
+            <button onClick={vaciarMuro} style={{ marginTop: '1rem', background: 'red', color: 'white' }}>
+              Vaciar muro de fotos
+            </button>
+          )}
         </div>
       )}
 
@@ -126,6 +160,24 @@ function MuroDeFotos() {
               <button onClick={() => manejarReaccion(idx, '😂')}>😂</button>
               <button onClick={() => manejarReaccion(idx, '👍')}>👍</button>
               <span>{foto.reacciones?.join(' ')}</span>
+            </div>
+            <div style={{ marginTop: '0.5rem' }}>
+              <strong>Comentarios:</strong>
+              <ul>
+                {foto.comentarios?.map((c, i) => (
+                  <li key={i}><strong>{c.usuario}:</strong> {c.texto}</li>
+                ))}
+              </ul>
+              <input
+                type="text"
+                placeholder="Escribe un comentario..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.target.value.trim()) {
+                    handleComentario(idx, e.target.value.trim());
+                    e.target.value = '';
+                  }
+                }}
+              />
             </div>
             {(esAdmin || foto.usuario === usuarioNombre) && (
               <button onClick={() => eliminarFoto(foto)}>Eliminar</button>
