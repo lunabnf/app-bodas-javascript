@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, collection, getDocs, setDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 
 const db = getFirestore(getApp());
@@ -14,7 +14,9 @@ export default function Usuarios() {
 
   const cargarUsuarios = async () => {
     const snapshot = await getDocs(collection(db, 'usuarios'));
-    const lista = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const lista = snapshot.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .filter((usuario) => usuario.registrado === true);
     setUsuarios(lista);
   };
 
@@ -27,15 +29,19 @@ export default function Usuarios() {
   };
 
   const borrarTodosLosUsuarios = async () => {
-    if (!window.confirm('¿Estás seguro de que quieres borrar todos los usuarios? Esta acción no se puede deshacer.')) return;
-    const snapshot = await getDocs(collection(db, 'usuarios'));
-    const batch = [];
-    snapshot.forEach((docSnapshot) => {
-      batch.push(docSnapshot.ref.delete());
-    });
-    await Promise.all(batch);
-    setUsuarios([]);
-    alert('Todos los usuarios han sido eliminados.');
+    try {
+      const snapshot = await getDocs(collection(db, 'usuarios'));
+      const batch = [];
+      snapshot.forEach((docSnapshot) => {
+        batch.push(deleteDoc(doc(db, 'usuarios', docSnapshot.id)));
+      });
+      await Promise.all(batch);
+      setUsuarios([]);
+      alert('Todos los usuarios han sido eliminados.');
+    } catch (error) {
+      console.error('Error al eliminar usuarios:', error);
+      alert('Hubo un problema al eliminar los usuarios.');
+    }
   };
 
   const guardarCodigo = () => {
@@ -62,6 +68,11 @@ export default function Usuarios() {
         >
           Guardar código secreto
         </button>
+        {localStorage.getItem('codigoSecreto') && (
+          <div className="mt-3 text-sm text-gray-700">
+            Código actual para registrarse: <span className="font-semibold">{localStorage.getItem('codigoSecreto')}</span>
+          </div>
+        )}
         <button
           onClick={borrarTodosLosUsuarios}
           className="mt-3 bg-red-600 text-white px-4 py-2 rounded w-full"
@@ -96,7 +107,7 @@ export default function Usuarios() {
             <button
               onClick={async () => {
                 if (!window.confirm(`¿Eliminar al usuario ${usuario.nombre}?`)) return;
-                await doc(db, 'usuarios', usuario.id).delete();
+                await deleteDoc(doc(db, 'usuarios', usuario.id));
                 setUsuarios(usuarios.filter(u => u.id !== usuario.id));
               }}
               className="mt-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm"

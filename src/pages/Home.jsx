@@ -3,7 +3,7 @@ import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-function App() {
+function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [nombre, setNombre] = useState("");
@@ -16,6 +16,7 @@ function App() {
     const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
+      navigate("/");
     }
     // Si el usuario quiere cerrar sesión
     // eslint-disable-next-line
@@ -33,16 +34,26 @@ function App() {
   const registrarUsuario = async () => {
     if (!nombre || !email || !codigo) return alert("Rellena todos los campos");
 
-    const codigoValido = "bodaleticia2025";
-    if (codigo !== codigoValido) return alert("Código incorrecto. Pide a los novios que te lo confirmen.");
+    const codigoGuardado = localStorage.getItem("codigoSecreto");
+    if (codigo !== codigoGuardado) {
+      alert("Código incorrecto. Pide a los novios que te lo confirmen.");
+      return;
+    }
 
     const nuevoUsuario = {
       nombre,
       email,
       rol: "invitado",
       uid: `${nombre}-${Date.now()}`,
-      codigo
+      codigo,
+      registrado: true,
     };
+
+    await addDoc(collection(getFirestore(getApp()), "usuarios"), nuevoUsuario);
+
+    console.log("Usuario registrado:", nuevoUsuario);
+    setUser(nuevoUsuario);
+    window.location.href = "/";
 
     if (mantenerSesion) {
       localStorage.setItem("user", JSON.stringify(nuevoUsuario));
@@ -50,7 +61,7 @@ function App() {
       sessionStorage.setItem("user", JSON.stringify(nuevoUsuario));
     }
 
-    window.location.reload();
+    // window.location.reload(); // Eliminado para mantener el estado sin recargar
   };
 
   return (
@@ -126,42 +137,6 @@ function App() {
         </div>
       </div>
 
-      <div style={{ marginTop: "3rem", padding: "2rem", background: "#f8f9fa", borderRadius: "10px" }}>
-        <h3>🔐 Acceso privado para invitados</h3>
-        <p>
-          Tu acceso está {localStorage.getItem("qrSesionActiva") ? "guardado ✅" : "activo pero no guardado ❌"}.
-        </p>
-        {!localStorage.getItem("qrSesionActiva") && (
-          <button
-            onClick={() => {
-              localStorage.setItem("qrSesionActiva", "true");
-              window.location.reload();
-            }}
-            style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              background: "#007bff",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}
-          >
-            Guardar acceso en este dispositivo
-          </button>
-        )}
-        {user?.displayName && (
-          <div style={{ marginTop: "2rem" }}>
-            <p><strong>Tu código QR personal:</strong></p>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://bodaleticiayeric.com/?codigo=${user.displayName.toLowerCase()}2025&size=150x150`}
-              alt="Código QR"
-              style={{ marginTop: "1rem", borderRadius: "8px" }}
-            />
-            <p style={{ fontSize: "0.9rem", marginTop: "0.5rem" }}>Escanea este código o compártelo para acceder desde otro dispositivo.</p>
-          </div>
-        )}
-      </div>
       {user && (
         <div style={{ marginTop: "2rem", textAlign: "center" }}>
           <button
@@ -183,4 +158,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

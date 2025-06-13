@@ -12,6 +12,7 @@
     "server:dev": "nodemon server/index.js"
   },
   "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "chart.js": "^4.4.9",
     "cors": "^2.8.5",
     "express": "^5.1.0",
