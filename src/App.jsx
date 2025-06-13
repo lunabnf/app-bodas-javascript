@@ -273,7 +273,7 @@ function AppRoutes({ setUser, setRolUsuario, user, rolUsuario }) {
     <Routes>
       <Route path="/" element={
         user ? (
-          <Programa isAdmin={true} />
+          <Home nombreBoda={"Boda E&L"} />
         ) : (
           <Home nombreBoda={"Boda E&L"} />
         )
