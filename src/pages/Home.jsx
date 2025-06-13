@@ -1,53 +1,33 @@
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
-function Home() {
-  const { usuario, iniciarSesion, verificarCodigoManual, codigoManual, setCodigoManual, accesoQRValido } = useAuth();
-
-  if (!usuario && !accesoQRValido) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-6 rounded-xl shadow-lg text-center space-y-4 max-w-sm w-full">
-          <h1 className="text-xl font-semibold">Bienvenido a la Boda de Eric & Leticia</h1>
-          <button onClick={iniciarSesion} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Iniciar sesión con Google
-          </button>
-          <div className="text-gray-500">— o —</div>
-          <input
-            type="text"
-            value={codigoManual}
-            onChange={(e) => setCodigoManual(e.target.value)}
-            placeholder="Introduce tu código"
-            className="border px-4 py-2 w-full rounded"
-          />
-          <button onClick={verificarCodigoManual} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Entrar con código
-          </button>
-        </div>
-      </div>
-    );
-  }
+function App() {
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
-      <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
-        <section className="text-center space-y-4">
-          <h2>Bienvenid@</h2>
-          <p>Gracias por acompañarnos en este viaje tan especial. 💖</p>
-          <div className="mt-8 text-left text-sm bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg shadow">
-            <h3 className="font-semibold mb-2">📲 ¿Quieres tener esta app como si fuera una aplicación en tu móvil?</h3>
-            <div className="mt-6 flex justify-center">
-              <img
-                src="/images/image.png"
-                alt="Instrucciones para agregar la app a la pantalla de inicio"
-                className="rounded-xl shadow-xl max-w-[320px] w-full"
-              />
-            </div>
-            <p className="mt-2 italic">Así podrás abrirla como una app más, sin navegador.</p>
-          </div>
-        </section>
+    <>
+      <div className="pwa-instructions" style={{ padding: "2rem", maxWidth: "600px", margin: "0 auto", textAlign: "center" }}>
+        <h2>📲 Añade esta app a tu pantalla de inicio</h2>
+        <p>Así podrás acceder como si fuera una aplicación normal:</p>
+        <div style={{ marginTop: "1rem", textAlign: "left" }}>
+          <h3>📱 Para iPhone (Safari):</h3>
+          <ul>
+            <li>1. Pulsa el botón <strong>Compartir</strong> (cuadro con flecha hacia arriba).</li>
+            <li>2. Baja hasta encontrar <strong>Añadir a pantalla de inicio</strong>.</li>
+            <li>3. Pulsa <strong>Añadir</strong>.</li>
+          </ul>
+          <h3 style={{ marginTop: "1rem" }}>📱 Para Android (Chrome):</h3>
+          <ul>
+            <li>1. Pulsa el icono de <strong>tres puntos</strong> (arriba a la derecha).</li>
+            <li>2. Toca <strong>Añadir a pantalla de inicio</strong>.</li>
+            <li>3. Confirma con <strong>Añadir</strong>.</li>
+          </ul>
+        </div>
+        <div style={{ marginTop: "1.5rem" }}>
+          <img src="/images/image.png" alt="Instrucciones PWA" style={{ width: "100%", maxWidth: "300px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-export default Home;
+export default App;

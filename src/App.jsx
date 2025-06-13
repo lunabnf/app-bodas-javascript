@@ -286,30 +286,58 @@ function AppRoot() {
       <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
         <div className="overflow-x-hidden w-full">
           <Router>
-            {/* Botón flotante fijo para Mi Participación */}
-            <Link
-              to="/miparticipacion"
-              style={{
-                position: "fixed",
-                top: "1rem",
-                left: "1rem",
-                background: "#fff",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-                color: "#007bff",
-                zIndex: 1000
-              }}
-            >
-              👤
-            </Link>
+            {(accesoQRValido || (user && admins.includes(user?.email))) && (
+              <>
+                {/* Botón flotante fijo para Mi Participación */}
+                <Link
+                  to="/miparticipacion"
+                  style={{
+                    position: "fixed",
+                    top: "1rem",
+                    left: "1rem",
+                    background: "#fff",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: "1.2rem",
+                    color: "#007bff",
+                    zIndex: 1000
+                  }}
+                >
+                  👤
+                </Link>
+                {/* Botón flotante fijo para ir a Home */}
+                <Link
+                  to="/"
+                  style={{
+                    position: "fixed",
+                    top: "1rem",
+                    left: "4.5rem",
+                    background: "#fff",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: "1.2rem",
+                    color: "#007bff",
+                    zIndex: 1000
+                  }}
+                >
+                  🏠
+                </Link>
+              </>
+            )}
             <header className="app-header">
               <h1 className="titulo-app">{nombreBoda}</h1>
               <div
@@ -403,9 +431,6 @@ function AppRoot() {
                             </Link>
                             <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">
                               Cuestionario
-                            </Link>
-                            <Link to="/miparticipacion" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              👤 Mi Participación
                             </Link>
                           </div>
                         )}
