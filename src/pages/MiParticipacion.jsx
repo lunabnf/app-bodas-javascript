@@ -82,43 +82,48 @@ export default function MiParticipacion() {
   if (!participacion) return <p>Cargando datos...</p>;
 
   return (
-    <div className="card">
-      <h2>Tu participación en la boda</h2>
-      <div className="participacion-info">
-        <div className="info-box"><strong>Nombre:</strong> {participacion.nombre}</div>
-        <div className="info-box"><strong>¿Has confirmado asistencia?:</strong> {participacion.asistencia}</div>
-        <div className="info-box"><strong>¿Has solicitado desplazamiento?:</strong> {participacion.desplazamiento}</div>
-        <div className="info-box">
-          <strong>Mesa:</strong>{" "}
-          {participacion.mesa === "No asignada" ? (
-            "No asignada"
-          ) : (
-            <a href="/mesas" style={{ textDecoration: "underline", color: "#007bff" }}>
-              {participacion.mesa}
-            </a>
-          )}
+    <div>
+      <button onClick={() => window.history.back()} style={{ marginBottom: "1rem", background: "none", border: "none", color: "#007bff", cursor: "pointer", fontSize: "1rem" }}>
+        ← Volver
+      </button>
+      <div className="card">
+        <h2>Tu participación en la boda</h2>
+        <div className="participacion-info">
+          <div className="info-box"><strong>Nombre:</strong> {participacion.nombre}</div>
+          <div className="info-box"><strong>¿Has confirmado asistencia?:</strong> {participacion.asistencia}</div>
+          <div className="info-box"><strong>¿Has solicitado desplazamiento?:</strong> {participacion.desplazamiento}</div>
+          <div className="info-box">
+            <strong>Mesa:</strong>{" "}
+            {participacion.mesa === "No asignada" ? (
+              "No asignada"
+            ) : (
+              <a href="/mesas" style={{ textDecoration: "underline", color: "#007bff" }}>
+                {participacion.mesa}
+              </a>
+            )}
+          </div>
+          <div className="info-box"><strong>Canción propuesta:</strong> {participacion.cancion}</div>
+          <div className="info-box"><strong>Voto en el ranking:</strong> {participacion.voto}</div>
+          <div className="info-box"><strong>¿Has respondido el cuestionario?:</strong> {participacion.cuestionario}</div>
+          <div className="info-box"><strong>¿Has subido una foto?:</strong> {participacion.fotoSubida}</div>
+          <div className="info-box"><strong>Asiento en la ceremonia:</strong> {participacion.asientoCeremonia}</div>
         </div>
-        <div className="info-box"><strong>Canción propuesta:</strong> {participacion.cancion}</div>
-        <div className="info-box"><strong>Voto en el ranking:</strong> {participacion.voto}</div>
-        <div className="info-box"><strong>¿Has respondido el cuestionario?:</strong> {participacion.cuestionario}</div>
-        <div className="info-box"><strong>¿Has subido una foto?:</strong> {participacion.fotoSubida}</div>
-        <div className="info-box"><strong>Asiento en la ceremonia:</strong> {participacion.asientoCeremonia}</div>
+        <style>{`
+          .participacion-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+          }
+          .info-box {
+            background: #fff0f5;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 1rem;
+          }
+        `}</style>
       </div>
-      <style>{`
-        .participacion-info {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          margin-top: 1.5rem;
-        }
-        .info-box {
-          background: #fff0f5;
-          border-radius: 10px;
-          padding: 1rem;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          font-size: 1rem;
-        }
-      `}</style>
     </div>
   );
 }
