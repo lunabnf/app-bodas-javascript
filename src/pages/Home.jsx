@@ -1,67 +1,106 @@
+import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
+import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [codigo, setCodigo] = useState("");
+  const [mantenerSesion, setMantenerSesion] = useState(true);
 
   useEffect(() => {
     // Simulación de obtención del usuario, reemplazar con lógica real si aplica
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     }
+    // Si el usuario quiere cerrar sesión
+    // eslint-disable-next-line
+    // (esto es sólo para dejar el comentario, la función va fuera del useEffect)
   }, []);
+
+  // Si el usuario quiere cerrar sesión
+  const cerrarSesion = () => {
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    localStorage.removeItem("qrSesionActiva");
+    window.location.reload();
+  };
+
+  const registrarUsuario = async () => {
+    if (!nombre || !email || !codigo) return alert("Rellena todos los campos");
+
+    const codigoValido = "bodaleticia2025";
+    if (codigo !== codigoValido) return alert("Código incorrecto. Pide a los novios que te lo confirmen.");
+
+    const nuevoUsuario = {
+      nombre,
+      email,
+      rol: "invitado",
+      uid: `${nombre}-${Date.now()}`,
+      codigo
+    };
+
+    if (mantenerSesion) {
+      localStorage.setItem("user", JSON.stringify(nuevoUsuario));
+    } else {
+      sessionStorage.setItem("user", JSON.stringify(nuevoUsuario));
+    }
+
+    window.location.reload();
+  };
 
   return (
     <>
       <div style={{ padding: "2rem", maxWidth: "600px", margin: "0 auto", textAlign: "center", background: "#eef2f5", borderRadius: "10px" }}>
         <h2>🔑 Accede a la app</h2>
-        <p>Puedes iniciar sesión con tu cuenta o introducir tu código de invitación:</p>
-
-        <button
-          onClick={() => {
-            // Simula el login con Google (reemplaza por lógica real si aplica)
-            const dummyUser = { displayName: "Luis", email: "luis@example.com" };
-            localStorage.setItem("user", JSON.stringify(dummyUser));
-            window.location.reload();
-          }}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#db4437",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            marginTop: "1rem",
-            cursor: "pointer"
-          }}
-        >
-          Iniciar sesión con Google
-        </button>
-
+        <p>Regístrate rápidamente para acceder como invitado:</p>
         <div style={{ marginTop: "1.5rem" }}>
           <input
             type="text"
-            placeholder="Introduce tu código de invitación"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                const code = e.target.value.trim().toLowerCase();
-                if (code) {
-                  localStorage.setItem("qrSesionActiva", "true");
-                  localStorage.setItem("user", JSON.stringify({ displayName: code.replace("2025", "") }));
-                  window.location.reload();
-                }
-              }
-            }}
-            style={{
-              padding: "0.5rem",
-              width: "80%",
-              maxWidth: "300px",
-              border: "1px solid #ccc",
-              borderRadius: "6px"
-            }}
+            placeholder="Tu nombre"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            style={{ padding: "0.5rem", marginBottom: "0.5rem", width: "80%", maxWidth: "300px", border: "1px solid #ccc", borderRadius: "6px" }}
           />
-          <p style={{ fontSize: "0.8rem", color: "#555", marginTop: "0.5rem" }}>Pulsa Enter para continuar</p>
+          <input
+            type="email"
+            placeholder="Tu email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ padding: "0.5rem", marginBottom: "0.5rem", width: "80%", maxWidth: "300px", border: "1px solid #ccc", borderRadius: "6px" }}
+          />
+          <input
+            type="text"
+            placeholder="Tu código de invitado"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            style={{ padding: "0.5rem", marginBottom: "0.5rem", width: "80%", maxWidth: "300px", border: "1px solid #ccc", borderRadius: "6px" }}
+          />
+          <label style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem", gap: "0.5rem" }}>
+            <input
+              type="checkbox"
+              checked={mantenerSesion}
+              onChange={() => setMantenerSesion(!mantenerSesion)}
+            />
+            Mantener sesión iniciada
+          </label>
+          <button
+            onClick={registrarUsuario}
+            style={{
+              padding: "0.5rem 1rem",
+              background: "#28a745",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Registrarme
+          </button>
         </div>
       </div>
 
@@ -115,7 +154,7 @@ function App() {
           <div style={{ marginTop: "2rem" }}>
             <p><strong>Tu código QR personal:</strong></p>
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://tuboda.com/?codigo=${user.displayName.toLowerCase()}2025&size=150x150`}
+              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://bodaleticiayeric.com/?codigo=${user.displayName.toLowerCase()}2025&size=150x150`}
               alt="Código QR"
               style={{ marginTop: "1rem", borderRadius: "8px" }}
             />
@@ -123,6 +162,23 @@ function App() {
           </div>
         )}
       </div>
+      {user && (
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+          <button
+            onClick={cerrarSesion}
+            style={{
+              padding: "0.5rem 1rem",
+              background: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      )}
     </>
   );
 }

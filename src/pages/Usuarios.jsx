@@ -1,241 +1,110 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from 'react';
+import { getFirestore, collection, getDocs, setDoc, doc } from 'firebase/firestore';
+import { getApp } from 'firebase/app';
+
+const db = getFirestore(getApp());
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
-
-  const [administradores, setAdministradores] = useState([]);
-  const [nuevoAdmin, setNuevoAdmin] = useState("");
-
-  const [moderadores, setModeradores] = useState([]);
-  const [nuevoMod, setNuevoMod] = useState("");
-
-  const agregarAdmin = () => {
-    if (nuevoAdmin.trim()) {
-      setAdministradores(prev => [...prev, nuevoAdmin.trim()]);
-      setNuevoAdmin("");
-    }
-  };
-
-  const agregarMod = () => {
-    if (nuevoMod.trim()) {
-      setModeradores(prev => [...prev, nuevoMod.trim()]);
-      setNuevoMod("");
-    }
-  };
+  const [codigoSecreto, setCodigoSecreto] = useState('');
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
-      const usuariosRef = collection(db, "bodas/bodaPrincipal/accesosQR");
-      const snapshot = await getDocs(usuariosRef);
-      const lista = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setUsuarios(lista);
-    };
-
-    fetchUsuarios();
+    cargarUsuarios();
   }, []);
 
-  const updateUsuario = (id, campo, valor) => {
-    setUsuarios(prevUsuarios =>
-      prevUsuarios.map(usuario =>
-        usuario.id === id ? { ...usuario, [campo]: valor } : usuario
-      )
-    );
+  const cargarUsuarios = async () => {
+    const snapshot = await getDocs(collection(db, 'usuarios'));
+    const lista = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    setUsuarios(lista);
   };
 
-  const handleGuardarUsuario = (usuario) => {
-    console.log("Guardar usuario:", usuario);
+  const cambiarRol = async (id, nuevoRol) => {
+    const usuario = usuarios.find(u => u.id === id);
+    if (!usuario) return;
+    const actualizado = { ...usuario, rol: nuevoRol };
+    await setDoc(doc(db, 'usuarios', id), actualizado);
+    setUsuarios(usuarios.map(u => u.id === id ? actualizado : u));
   };
 
-  const handleEditarUsuario = (usuario) => {
-    console.log("Editar usuario:", usuario);
+  const borrarTodosLosUsuarios = async () => {
+    if (!window.confirm('¿Estás seguro de que quieres borrar todos los usuarios? Esta acción no se puede deshacer.')) return;
+    const snapshot = await getDocs(collection(db, 'usuarios'));
+    const batch = [];
+    snapshot.forEach((docSnapshot) => {
+      batch.push(docSnapshot.ref.delete());
+    });
+    await Promise.all(batch);
+    setUsuarios([]);
+    alert('Todos los usuarios han sido eliminados.');
   };
 
-  const handleEliminarUsuario = (id) => {
-    console.log("Eliminar usuario con id:", id);
+  const guardarCodigo = () => {
+    localStorage.setItem('codigoSecreto', codigoSecreto);
+    alert('Código secreto guardado.');
   };
-
-  const handleCambiarRol = (usuario) => {
-    console.log("Cambiar rol del usuario:", usuario);
-  };
-
-  const invitadosNovia = usuarios.filter(u => u.tipo === "novia");
-  const invitadosNovio = usuarios.filter(u => u.tipo === "novio");
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-center mb-6">Usuarios de la App</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-pink-600">👰 Invitados de la Novia</h2>
-          <div className="space-y-4">
-            {invitadosNovia.map(usuario => (
-              <div key={usuario.id} className="bg-white p-4 rounded-lg shadow-md space-y-2">
-                <input
-                  type="text"
-                  value={usuario.nombre || ""}
-                  onChange={e => updateUsuario(usuario.id, 'nombre', e.target.value)}
-                  placeholder="Nombre"
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-                <input
-                  type="text"
-                  value={usuario.email || ""}
-                  onChange={e => updateUsuario(usuario.id, 'email', e.target.value)}
-                  placeholder="Email"
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-                <select
-                  value={usuario.tipo || ""}
-                  onChange={e => updateUsuario(usuario.id, 'tipo', e.target.value)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                >
-                  <option value="">Sin tipo</option>
-                  <option value="novia">Novia</option>
-                  <option value="novio">Novio</option>
-                </select>
-                <select
-                  value={usuario.rol || ""}
-                  onChange={e => updateUsuario(usuario.id, 'rol', e.target.value)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                >
-                  <option value="">Sin rol</option>
-                  <option value="admin">Administrador</option>
-                  <option value="moderador">Moderador</option>
-                  <option value="invitado">Invitado</option>
-                </select>
-                <label className="inline-flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={usuario.loggedIn || false}
-                    onChange={e => updateUsuario(usuario.id, 'loggedIn', e.target.checked)}
-                    className="form-checkbox"
-                  />
-                  Logueado
-                </label>
-                <button
-                  className="text-sm bg-green-100 hover:bg-green-200 text-green-800 px-3 py-1 rounded"
-                  onClick={() => handleGuardarUsuario(usuario)}
-                >
-                  Guardar
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-blue-600">🤵 Invitados del Novio</h2>
-          <div className="space-y-4">
-            {invitadosNovio.map(usuario => (
-              <div key={usuario.id} className="bg-white p-4 rounded-lg shadow-md space-y-2">
-                <input
-                  type="text"
-                  value={usuario.nombre || ""}
-                  onChange={e => updateUsuario(usuario.id, 'nombre', e.target.value)}
-                  placeholder="Nombre"
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-                <input
-                  type="text"
-                  value={usuario.email || ""}
-                  onChange={e => updateUsuario(usuario.id, 'email', e.target.value)}
-                  placeholder="Email"
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                />
-                <select
-                  value={usuario.tipo || ""}
-                  onChange={e => updateUsuario(usuario.id, 'tipo', e.target.value)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                >
-                  <option value="">Sin tipo</option>
-                  <option value="novia">Novia</option>
-                  <option value="novio">Novio</option>
-                </select>
-                <select
-                  value={usuario.rol || ""}
-                  onChange={e => updateUsuario(usuario.id, 'rol', e.target.value)}
-                  className="w-full border border-gray-300 rounded px-2 py-1"
-                >
-                  <option value="">Sin rol</option>
-                  <option value="admin">Administrador</option>
-                  <option value="moderador">Moderador</option>
-                  <option value="invitado">Invitado</option>
-                </select>
-                <label className="inline-flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={usuario.loggedIn || false}
-                    onChange={e => updateUsuario(usuario.id, 'loggedIn', e.target.checked)}
-                    className="form-checkbox"
-                  />
-                  Logueado
-                </label>
-                <button
-                  className="text-sm bg-green-100 hover:bg-green-200 text-green-800 px-3 py-1 rounded"
-                  onClick={() => handleGuardarUsuario(usuario)}
-                >
-                  Guardar
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+      <h1 className="text-2xl font-bold text-center mb-4">Gestión de Usuarios</h1>
+
+      <div className="mb-6 bg-white p-4 rounded shadow max-w-md mx-auto">
+        <label className="block mb-2 font-medium text-gray-700">Código secreto para acceso:</label>
+        <input
+          type="text"
+          value={codigoSecreto}
+          onChange={(e) => setCodigoSecreto(e.target.value)}
+          className="w-full p-2 border rounded"
+          placeholder="Ej: fiesta2025"
+        />
+        <button
+          onClick={guardarCodigo}
+          className="mt-3 bg-blue-600 text-white px-4 py-2 rounded w-full"
+        >
+          Guardar código secreto
+        </button>
+        <button
+          onClick={borrarTodosLosUsuarios}
+          className="mt-3 bg-red-600 text-white px-4 py-2 rounded w-full"
+        >
+          Borrar todos los usuarios
+        </button>
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4 text-yellow-700">👑 Administradores</h2>
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={nuevoAdmin}
-            onChange={e => setNuevoAdmin(e.target.value)}
-            placeholder="Nombre del administrador"
-            className="border px-2 py-1 rounded w-full"
-          />
-          <button
-            onClick={agregarAdmin}
-            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded"
-          >
-            Añadir
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {administradores.map((admin, idx) => (
-            <span key={idx} className="bg-yellow-200 text-yellow-900 px-3 py-1 rounded">
-              {admin}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4 text-purple-700">🛡️ Moderadores</h2>
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={nuevoMod}
-            onChange={e => setNuevoMod(e.target.value)}
-            placeholder="Nombre del moderador"
-            className="border px-2 py-1 rounded w-full"
-          />
-          <button
-            onClick={agregarMod}
-            className="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded"
-          >
-            Añadir
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {moderadores.map((mod, idx) => (
-            <span key={idx} className="bg-purple-200 text-purple-900 px-3 py-1 rounded">
-              {mod}
-            </span>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+        {usuarios.map((usuario) => (
+          <div key={usuario.id} className="bg-white p-4 rounded shadow text-center">
+            <div className="text-lg font-semibold text-gray-900">{usuario.nombre}</div>
+            <div className="text-sm font-medium text-pink-600">Rol: {usuario.rol}</div>
+            {usuario.codigo && (
+              <div className="text-xs text-gray-500 mt-1">Código: {usuario.codigo}</div>
+            )}
+            <div className="mt-3 flex justify-center gap-2">
+              {['invitado', 'moderador', 'administrador'].map((rol) => (
+                <button
+                  key={rol}
+                  onClick={() => cambiarRol(usuario.id, rol)}
+                  className={`px-3 py-1 text-sm rounded-full border ${
+                    usuario.rol === rol
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'border-gray-300 text-gray-700'
+                  }`}
+                >
+                  {rol}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={async () => {
+                if (!window.confirm(`¿Eliminar al usuario ${usuario.nombre}?`)) return;
+                await doc(db, 'usuarios', usuario.id).delete();
+                setUsuarios(usuarios.filter(u => u.id !== usuario.id));
+              }}
+              className="mt-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm"
+            >
+              Borrar usuario
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
