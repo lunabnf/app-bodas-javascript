@@ -74,58 +74,6 @@ useEffect(() => {
       <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
         <div className="overflow-x-hidden w-full">
           <Router>
-            {user && (
-              <>
-                {/* Botón flotante fijo para Mi Participación */}
-                <Link
-                  to={`/miparticipacion/${user?.uid}`}
-                  style={{
-                    position: "fixed",
-                    top: "1rem",
-                    left: "1rem",
-                    background: "#fff",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    fontSize: "1.2rem",
-                    color: "#007bff",
-                    zIndex: 1000
-                  }}
-                >
-                  👤
-                </Link>
-                {/* Botón flotante fijo para ir a Home */}
-                <Link
-                  to="/"
-                  style={{
-                    position: "fixed",
-                    top: "1rem",
-                    left: "4.5rem",
-                    background: "#fff",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    fontSize: "1.2rem",
-                    color: "#007bff",
-                    zIndex: 1000
-                  }}
-                >
-                  🏠
-                </Link>
-              </>
-            )}
             <header className="app-header">
               <h1 className="titulo-app">{nombreBoda}</h1>
               {/* Botón flotante fijo para abrir menú principal */}
@@ -154,8 +102,25 @@ useEffect(() => {
                 </button>
               </div>
               {menuOpen && (
-                <div>
-                  <nav className="fixed top-24 left-4 md:left-auto md:right-4 bg-white shadow-2xl rounded-3xl p-6 w-11/12 max-w-sm z-50">
+                <div
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    zIndex: 1001,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <nav
+                    className="bg-white shadow-2xl rounded-3xl p-6 w-11/12 max-w-sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <div className="flex flex-col gap-3">
                       <button onClick={() => setMenuSection("necesitas")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "necesitas" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
                         NECESITAS SABER
@@ -167,69 +132,30 @@ useEffect(() => {
                         MODO PRO
                       </button>
                     </div>
-
                     <div className="mt-6 flex flex-col gap-4">
                       {menuSection === "necesitas" && (
-                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                          <Link
-                            to="/programa"
-                            onClick={() => setMenuOpen(false)}
-                            className="submenu-link"
-                          >
-                            Programa
-                          </Link>
-                          <Link
-                            to="/info"
-                            onClick={() => setMenuOpen(false)}
-                            className="submenu-link"
-                          >
-                            Info
-                          </Link>
-                          <Link
-                            to="/confirmar"
-                            onClick={() => setMenuOpen(false)}
-                            className="submenu-link"
-                          >
-                            Confirmar
-                          </Link>
-                          <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Mesas
-                          </Link>
-                          <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Asientos de la Ceremonia
-                          </Link>
+                        <div className="flex flex-col gap-4">
+                          <Link to="/programa" onClick={() => setMenuOpen(false)} className="submenu-link">Programa</Link>
+                          <Link to="/info" onClick={() => setMenuOpen(false)} className="submenu-link">Info</Link>
+                          <Link to="/confirmar" onClick={() => setMenuOpen(false)} className="submenu-link">Confirmar</Link>
+                          <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">Mesas</Link>
+                          <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">Asientos de la Ceremonia</Link>
                         </div>
                       )}
                       {menuSection === "saberMas" && (
-                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                          <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Cuenta Atrás
-                          </Link>
-                          <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Música
-                          </Link>
-                          <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Invitación
-                          </Link>
-                          <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Desplazamiento
-                          </Link>
+                        <div className="flex flex-col gap-4">
+                          <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">Cuenta Atrás</Link>
+                          <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">Música</Link>
+                          <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
+                          <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
                         </div>
                       )}
                       {menuSection === "modoPro" && (
-                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                          <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Ranking de Invitados
-                          </Link>
-                          <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Muro de Fotos
-                          </Link>
-                          <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Chat entre Invitados
-                          </Link>
-                          <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">
-                            Cuestionario
-                          </Link>
+                        <div className="flex flex-col gap-4">
+                          <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
+                          <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
+                          <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
+                          <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
                         </div>
                       )}
                     </div>
@@ -255,6 +181,72 @@ useEffect(() => {
                 </button>
               </div>
             )}
+            {/* Icono de participación del usuario */}
+            <div
+              style={{
+                position: "fixed",
+                top: "1rem",
+                left: "1rem",
+                zIndex: 1000
+              }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  display: "inline-block"
+                }}
+              >
+                <Link
+                  to={`/miparticipacion/${user?.uid}`}
+                  onMouseEnter={() => setMenuSection("participacionTooltip")}
+                  onMouseLeave={() => setMenuSection(null)}
+                  style={{
+                    background: "#fff",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    color: "#007bff",
+                    textDecoration: "none"
+                  }}
+                >
+                  👤
+                </Link>
+                {menuSection === "participacionTooltip" && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "3rem",
+                      left: 0,
+                      background: "#fff",
+                      borderRadius: "1rem",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                      padding: "1rem",
+                      width: "260px"
+                    }}
+                  >
+                    <p><strong>Estado:</strong> ✅ Conectado</p>
+                    <p><strong>Rol:</strong> {rolUsuario}</p>
+                    <p className="mt-2 font-bold text-pink-600">Tareas pendientes:</p>
+                    <ul className="list-disc ml-4 text-sm text-blue-600">
+                      <li><Link to="/confirmar">Confirmar asistencia</Link></li>
+                      <li><Link to="/desplazamiento">Solicitar desplazamiento</Link></li>
+                      <li><Link to="/musica">Proponer canción</Link></li>
+                      <li><Link to="/ranking">Votar en el ranking</Link></li>
+                      <li><Link to="/cuestionario">Responder cuestionario</Link></li>
+                      <li><Link to="/muro">Subir foto</Link></li>
+                      <li><Link to="/mesas">Esperar asignación de mesa</Link></li>
+                      <li><Link to="/ceremonia">Esperar asignación en ceremonia</Link></li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
             {/* Botón flotante fijo para Organización (solo admin) con menú hamburguesa */}
             {rolUsuario === "admin" && (
               <div
@@ -311,6 +303,37 @@ useEffect(() => {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+            {/* Botón flotante fijo para Home (solo admin) en la esquina derecha */}
+            {rolUsuario === "admin" && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: "1rem",
+                  right: "1rem",
+                  zIndex: 1000
+                }}
+              >
+                <Link
+                  to="/"
+                  style={{
+                    background: "#fff",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: "1.2rem",
+                    color: "#007bff"
+                  }}
+                >
+                  🏠
+                </Link>
               </div>
             )}
           </Router>

@@ -61,7 +61,9 @@ export default function MiParticipacion() {
         });
 
         setParticipacion({
-          nombre: id,
+          nombre: data.usuarios?.[id]?.nombre && data.usuarios?.[id]?.apellidos
+            ? `${data.usuarios[id].nombre} ${data.usuarios[id].apellidos}`
+            : data.usuarios?.[id]?.nombre || id,
           mesa: mesaAsignada || "No asignada",
           asientoMesa,
           cancion: miCancion || "No propuesta",
@@ -102,24 +104,38 @@ export default function MiParticipacion() {
       <div
         onMouseEnter={() => setMostrarTooltip(true)}
         onMouseLeave={() => setMostrarTooltip(false)}
-        style={{ position: "relative", display: "inline-block", marginBottom: "1rem" }}
+        style={{
+          position: "fixed",
+          top: "1rem",
+          left: "1rem",
+          zIndex: 1000,
+          display: "inline-block"
+        }}
       >
-        <button style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: "1.2rem" }}>
+        <button
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "1.5rem"
+          }}
+        >
           👤
         </button>
         {mostrarTooltip && (
-          <div style={{
-            position: "absolute",
-            top: "2rem",
-            left: "0",
-            background: "white",
-            border: "1px solid #ccc",
-            padding: "1rem",
-            borderRadius: "10px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-            zIndex: 10,
-            width: "300px"
-          }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "2rem",
+              left: "0",
+              background: "white",
+              border: "1px solid #ccc",
+              padding: "1rem",
+              borderRadius: "10px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              width: "300px"
+            }}
+          >
             <div style={{ marginBottom: "0.5rem" }}>
               <strong>Estado:</strong> <span style={{ color: "green" }}>● Conectado</span>
             </div>
@@ -131,7 +147,18 @@ export default function MiParticipacion() {
               <ul style={{ paddingLeft: "1.2rem" }}>
                 {tareasPendientes.length > 0 ? tareasPendientes.map((tarea, i) => (
                   <li key={i}>
-                    <a href={tarea.includes("Confirmar") ? "/confirmar" : tarea.includes("desplazamiento") ? "/confirmar" : tarea.includes("canción") ? "/musica" : tarea.includes("ranking") ? "/ranking" : tarea.includes("cuestionario") ? "/cuestionario" : tarea.includes("foto") ? "/murofotos" : "#"} style={{ color: "#007bff", textDecoration: "underline" }}>
+                    <a
+                      href={
+                        tarea.includes("Confirmar") ? "/confirmar"
+                        : tarea.includes("desplazamiento") ? "/confirmar"
+                        : tarea.includes("canción") ? "/musica"
+                        : tarea.includes("ranking") ? "/ranking"
+                        : tarea.includes("cuestionario") ? "/cuestionario"
+                        : tarea.includes("foto") ? "/murofotos"
+                        : "#"
+                      }
+                      style={{ color: "#007bff", textDecoration: "underline" }}
+                    >
                       {tarea}
                     </a>
                   </li>
