@@ -153,9 +153,6 @@ useEffect(() => {
                         <button onClick={() => setMenuSection("modoPro")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "modoPro" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
                           MODO PRO
                         </button>
-                        <button onClick={() => setMenuSection("organizacion")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "organizacion" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
-                          ORGANIZACIÓN
-                        </button>
                       </div>
 
                       <div className="mt-6 flex flex-col gap-4">
@@ -222,19 +219,6 @@ useEffect(() => {
                             </Link>
                           </div>
                         )}
-                        {menuSection === "organizacion" && (
-                          <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                            <Link to="/registro" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Registro de acciones
-                            </Link>
-                            <Link to="/checklist" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Checklist de tareas
-                            </Link>
-                            <Link to="/usuarios" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Gestión de usuarios
-                            </Link>
-                          </div>
-                        )}
                       </div>
                     </nav>
                   </div>
@@ -257,6 +241,64 @@ useEffect(() => {
                 >
                   Iniciar sesión con Google
                 </button>
+              </div>
+            )}
+            {/* Botón flotante fijo para Organización (solo admin) con menú hamburguesa */}
+            {rolUsuario === "admin" && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: "1rem",
+                  right: "4.5rem",
+                  zIndex: 1000
+                }}
+              >
+                <div style={{ position: "relative" }}>
+                  <button
+                    onClick={() => setMenuSection(prev => prev === "adminPanel" ? null : "adminPanel")}
+                    style={{
+                      background: "#fff",
+                      borderRadius: "50%",
+                      width: "40px",
+                      height: "40px",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textDecoration: "none",
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      color: "#007bff"
+                    }}
+                    title="Panel de Organización"
+                  >
+                    🛠️
+                  </button>
+                  {menuSection === "adminPanel" && (
+                    <div style={{
+                      position: "absolute",
+                      top: "3rem",
+                      right: 0,
+                      background: "#fff",
+                      borderRadius: "1rem",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                      padding: "1rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.5rem"
+                    }}>
+                      <Link to="/registro" onClick={() => setMenuSection(null)} className="submenu-link">
+                        Registro de acciones
+                      </Link>
+                      <Link to="/usuarios" onClick={() => setMenuSection(null)} className="submenu-link">
+                        Gestión de usuarios
+                      </Link>
+                      <Link to="/checklist" onClick={() => setMenuSection(null)} className="submenu-link">
+                        Panel de administración
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </Router>
