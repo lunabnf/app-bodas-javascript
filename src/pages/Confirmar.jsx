@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { doc, getDoc, updateDoc, setDoc, arrayUnion, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, arrayUnion, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebaseConfig";
 import { registrarAccion } from '../utils/registrarAccion';
@@ -15,13 +15,11 @@ function Confirmar({ confirmarAsistencia }) {
   const [user] = useAuthState(auth);
   const [isAdmin, setIsAdmin] = useState(false);
   const [confirmacionesData, setConfirmacionesData] = useState({});
-  const [grupoFamiliar, setGrupoFamiliar] = useState("");
-
   useEffect(() => {
     setNombres((prev) => {
       const nuevos = [...prev];
       if (nuevos.length < numAsistentes) {
-        return [...nuevos, ...Array(numAsistentes - nuevos.length).fill({ nombre: "", alergia: "" })];
+        return [...nuevos, ...Array(numAsistentes - nuevos.length).fill({ nombre: "", apellidos: "", alergia: "" })];
       } else {
         return nuevos.slice(0, numAsistentes);
       }
@@ -32,7 +30,7 @@ function Confirmar({ confirmarAsistencia }) {
     setNombresNinos((prev) => {
       const nuevos = [...prev];
       if (nuevos.length < numNinos) {
-        return [...nuevos, ...Array(numNinos - nuevos.length).fill({ nombre: "", alergia: "" })];
+        return [...nuevos, ...Array(numNinos - nuevos.length).fill({ nombre: "", apellidos: "", alergia: "" })];
       } else {
         return nuevos.slice(0, numNinos);
       }
@@ -81,9 +79,9 @@ function Confirmar({ confirmarAsistencia }) {
     fetchConfirmaciones();
   }, []);
 
-  // Función para eliminar confirmación
-  const eliminarConfirmado = async (uid) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este registro de confirmación?")) return;
+  // Eliminar confirmación completamente por UID
+  const eliminarConfirmacionPorUID = async (uid) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este registro de confirmación? Esta acción eliminará completamente a los comensales de todos los sitios.")) return;
     try {
       const ref = doc(db, "bodas", "bodaPrincipal");
       const snap = await getDoc(ref);
@@ -94,16 +92,16 @@ function Confirmar({ confirmarAsistencia }) {
         delete actual[uid];
         await setDoc(ref, { confirmaciones: actual }, { merge: true });
         setConfirmacionesData(actual);
-        alert("✅ Confirmación eliminada correctamente.");
+        alert("✅ Comensales eliminados de forma global.");
 
-        // También elimina del registro de acciones
+        // Eliminar del registro de acciones
         const accionesRef = collection(db, "bodas", "bodaPrincipal", "registroAcciones");
-        const q = query(accionesRef, where("nombre", "==", conf?.detalles[0]?.nombre));
+        const q = query(accionesRef, where("asistente", "in", conf.detalles.map(d => `${d.nombre} ${d.apellidos}`.trim())));
         const snapshot = await getDocs(q);
         snapshot.forEach((doc) => deleteDoc(doc.ref));
       }
     } catch (err) {
-      console.error("Error al eliminar confirmación:", err);
+      console.error("Error al eliminar confirmación completa:", err);
     }
   };
 
@@ -166,11 +164,10 @@ function Confirmar({ confirmarAsistencia }) {
       const id = `${user.uid}_${persona.nombre}_${Date.now()}`;
       confirmacionesAnteriores[id] = {
         email: user.email,
-        nombres: [persona.nombre],
+        nombres: [`${persona.nombre} ${persona.apellidos}`.trim()],
         detalles: [persona],
         numNinos,
         agregadoPor: user.displayName || user.email,
-        grupoFamiliar: grupoFamiliar,
       };
     });
 
@@ -180,7 +177,7 @@ function Confirmar({ confirmarAsistencia }) {
 
     for (let persona of todosLosAsistentes) {
       await registrarAccion(user.displayName || user.email, "confirmarAsistencia", {
-        asistente: persona.nombre,
+        asistente: `${persona.nombre} ${persona.apellidos}`.trim(),
         alergia: persona.alergia || "",
         tipo: nombresNinos.includes(persona) ? "niño" : "adulto"
       });
@@ -242,6 +239,20 @@ function Confirmar({ confirmarAsistencia }) {
                 />
               </label>
               <label>
+                Apellidos:
+                <input
+                  type="text"
+                  value={nombres[idx]?.apellidos || ""}
+                  onChange={(e) => {
+                    const nuevos = [...nombres];
+                    nuevos[idx].apellidos = e.target.value;
+                    setNombres(nuevos);
+                  }}
+                  required
+                  style={{ marginLeft: "0.5em" }}
+                />
+              </label>
+              <label>
                 Alergia:
                 <select
                   value={nombres[idx]?.alergia || ""}
@@ -274,6 +285,20 @@ function Confirmar({ confirmarAsistencia }) {
                   />
                 </label>
                 <label>
+                  Apellidos:
+                  <input
+                    type="text"
+                    value={nombresNinos[idx]?.apellidos || ""}
+                    onChange={(e) => {
+                      const nuevos = [...nombresNinos];
+                      nuevos[idx].apellidos = e.target.value;
+                      setNombresNinos(nuevos);
+                    }}
+                    required
+                    style={{ marginLeft: "0.5em" }}
+                  />
+                </label>
+                <label>
                   Alergia:
                   <select
                     value={nombresNinos[idx]?.alergia || ""}
@@ -291,16 +316,6 @@ function Confirmar({ confirmarAsistencia }) {
             ))}
           </div>
         )}
-        <label>
-          Grupo familiar (opcional):
-          <input
-            type="text"
-            value={grupoFamiliar}
-            onChange={(e) => setGrupoFamiliar(e.target.value)}
-            placeholder="Ej: Confirmamos María, José y nuestros 2 hijos"
-            style={{ marginLeft: "0.5em", width: "100%" }}
-          />
-        </label>
         <button type="submit">Confirmar</button>
       </form>
       {confirmados.length > 0 && (
@@ -362,7 +377,7 @@ function Confirmar({ confirmarAsistencia }) {
                     {d.nombre}
                     {isAdmin && (
                       <button
-                        onClick={() => eliminarConfirmado(uid)}
+                        onClick={() => eliminarConfirmacionPorUID(uid)}
                         style={{
                           marginLeft: "0.5em",
                           background: "transparent",
@@ -397,11 +412,6 @@ function Confirmar({ confirmarAsistencia }) {
                   {isAdmin && (
                     <div style={{ fontSize: "0.8em", color: "#999" }}>
                       Añadido por: {conf.agregadoPor || "Desconocido"}
-                    </div>
-                  )}
-                  {conf.grupoFamiliar && (
-                    <div style={{ fontSize: "0.85em", color: "#555" }}>
-                      Grupo familiar: {conf.grupoFamiliar}
                     </div>
                   )}
                 </div>
