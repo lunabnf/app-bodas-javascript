@@ -25,6 +25,7 @@ import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { db } from './firebaseConfig';
 
 function AppRoot() {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuSection, setMenuSection] = useState("necesitas");
   const [user, setUser] = useState(null);
@@ -86,19 +87,22 @@ useEffect(() => {
                   zIndex: 1000
                 }}
                 onMouseEnter={() => {
-                  clearTimeout(window.menuTimeout);
-                  setMenuOpen(true);
+                  if (!isTouchDevice) {
+                    clearTimeout(window.menuTimeout);
+                    setMenuOpen(true);
+                  }
                 }}
                 onMouseLeave={() => {
-                  window.menuTimeout = setTimeout(() => {
-                    setMenuOpen(false);
-                  }, 500);
+                  if (!isTouchDevice) {
+                    window.menuTimeout = setTimeout(() => {
+                      setMenuOpen(false);
+                    }, 500);
+                  }
                 }}
               >
                 <button
-                  // onClick fallback para móviles (touch)
                   onClick={() => {
-                    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                    if (isTouchDevice) {
                       setMenuOpen(prev => !prev);
                     }
                   }}
@@ -132,9 +136,11 @@ useEffect(() => {
                   onClick={() => setMenuOpen(false)}
                   onMouseEnter={() => clearTimeout(window.menuTimeout)}
                   onMouseLeave={() => {
-                    window.menuTimeout = setTimeout(() => {
-                      setMenuOpen(false);
-                    }, 500);
+                    if (!isTouchDevice) {
+                      window.menuTimeout = setTimeout(() => {
+                        setMenuOpen(false);
+                      }, 500);
+                    }
                   }}
                 >
                   <nav
@@ -218,8 +224,15 @@ useEffect(() => {
               >
                 <Link
                   to={`/miparticipacion/${user?.uid}`}
-                  onMouseEnter={() => setMenuSection("participacionTooltip")}
-                  onMouseLeave={() => setMenuSection(null)}
+                  onClick={() => {
+                    if (isTouchDevice) setMenuSection("participacionTooltip");
+                  }}
+                  onMouseEnter={() => {
+                    if (!isTouchDevice) setMenuSection("participacionTooltip");
+                  }}
+                  onMouseLeave={() => {
+                    if (!isTouchDevice) setMenuSection(null);
+                  }}
                   style={{
                     background: "#fff",
                     borderRadius: "50%",
@@ -277,13 +290,17 @@ useEffect(() => {
                   zIndex: 1000
                 }}
                 onMouseEnter={() => {
-                  clearTimeout(window.adminPanelTimeout);
-                  setMenuSection("adminPanel");
+                  if (!isTouchDevice) {
+                    clearTimeout(window.adminPanelTimeout);
+                    setMenuSection("adminPanel");
+                  }
                 }}
                 onMouseLeave={() => {
-                  window.adminPanelTimeout = setTimeout(() => {
-                    setMenuSection(null);
-                  }, 500); // Espera de 500 ms antes de cerrar
+                  if (!isTouchDevice) {
+                    window.adminPanelTimeout = setTimeout(() => {
+                      setMenuSection(null);
+                    }, 500); // Espera de 500 ms antes de cerrar
+                  }
                 }}
               >
                 <div style={{ position: "relative" }}>
@@ -302,6 +319,22 @@ useEffect(() => {
                       color: "#007bff"
                     }}
                     title="Panel de Organización"
+                    onClick={() => {
+                      if (isTouchDevice) setMenuSection("adminPanel");
+                    }}
+                    onMouseEnter={() => {
+                      if (!isTouchDevice) {
+                        clearTimeout(window.adminPanelTimeout);
+                        setMenuSection("adminPanel");
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!isTouchDevice) {
+                        window.adminPanelTimeout = setTimeout(() => {
+                          setMenuSection(null);
+                        }, 500);
+                      }
+                    }}
                   >
                     🛠️
                   </div>
@@ -319,11 +352,15 @@ useEffect(() => {
                         flexDirection: "column",
                         gap: "0.5rem"
                       }}
-                      onMouseEnter={() => clearTimeout(window.adminPanelTimeout)}
+                      onMouseEnter={() => {
+                        if (!isTouchDevice) clearTimeout(window.adminPanelTimeout);
+                      }}
                       onMouseLeave={() => {
-                        window.adminPanelTimeout = setTimeout(() => {
-                          setMenuSection(null);
-                        }, 500);
+                        if (!isTouchDevice) {
+                          window.adminPanelTimeout = setTimeout(() => {
+                            setMenuSection(null);
+                          }, 500);
+                        }
                       }}
                     >
                       <Link to="/registro" className="submenu-link">

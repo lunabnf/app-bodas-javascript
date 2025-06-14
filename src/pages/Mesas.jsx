@@ -373,23 +373,48 @@ function Mesas() {
               if (!invitadoArrastrado) return;
               setMesas((prev) =>
                 prev.map((mesa, idx) => {
-                  // Quitar el invitado de todas las mesas
-                  const comensalesSinInvitado = mesa.comensales.map((c) =>
+                  const comensalesActualizados = mesa.comensales.map((c) =>
                     c === invitadoArrastrado ? "" : c
                   );
 
                   if (idx === mesaIdx) {
-                    // Asignar a esta mesa si hay hueco
-                    const libre = comensalesSinInvitado.findIndex((c) => c === "");
-                    if (libre !== -1) {
-                      comensalesSinInvitado[libre] = invitadoArrastrado;
+                    const hueco = comensalesActualizados.findIndex((c) => c === "");
+                    if (hueco !== -1) {
+                      comensalesActualizados[hueco] = invitadoArrastrado;
                     }
                   }
 
-                  return { ...mesa, comensales: comensalesSinInvitado };
+                  return { ...mesa, comensales: comensalesActualizados };
                 })
               );
-              setConfirmados((prev) => prev.filter((n) => n !== invitadoArrastrado));
+
+              setConfirmados((prev) =>
+                prev.filter((invitado) => invitado.nombre !== invitadoArrastrado)
+              );
+              setInvitadoArrastrado(null);
+            }}
+            onTouchEndCapture={() => {
+              if (!invitadoArrastrado) return;
+
+              setMesas((prev) =>
+                prev.map((mesa, idx) => {
+                  if (idx !== mesaIdx) return mesa;
+
+                  const comensalesActualizados = mesa.comensales.map((c) =>
+                    c === invitadoArrastrado ? "" : c
+                  );
+                  const hueco = comensalesActualizados.findIndex((c) => c === "");
+                  if (hueco !== -1) {
+                    comensalesActualizados[hueco] = invitadoArrastrado;
+                  }
+
+                  return { ...mesa, comensales: comensalesActualizados };
+                })
+              );
+
+              setConfirmados((prev) =>
+                prev.filter((invitado) => invitado.nombre !== invitadoArrastrado)
+              );
               setInvitadoArrastrado(null);
             }}
             style={{

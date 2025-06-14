@@ -60,6 +60,9 @@ function Confirmar({ confirmarAsistencia }) {
         if (snap.exists()) {
           const data = snap.data();
           const adminUIDs = data.adminUIDs || [];
+          // Debug logs para desarrollador
+          console.log("UID actual:", user.uid);
+          console.log("adminUIDs desde Firebase:", adminUIDs);
           setIsAdmin(adminUIDs.includes(user.uid));
         }
       }
@@ -102,6 +105,34 @@ function Confirmar({ confirmarAsistencia }) {
       }
     } catch (err) {
       console.error("Error al eliminar confirmación completa:", err);
+    }
+  };
+
+  // Eliminar solo un comensal específico de una confirmación
+  const eliminarComensalEspecifico = async (uid, index) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar a este comensal?")) return;
+    try {
+      const ref = doc(db, "bodas", "bodaPrincipal");
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const confirmaciones = data.confirmaciones || {};
+      const entrada = confirmaciones[uid];
+
+      if (!entrada || !entrada.detalles) return;
+
+      entrada.detalles.splice(index, 1);
+      entrada.nombres.splice(index, 1);
+
+      if (entrada.detalles.length === 0) {
+        delete confirmaciones[uid];
+      }
+
+      await setDoc(ref, { confirmaciones }, { merge: true });
+      setConfirmacionesData(confirmaciones);
+    } catch (err) {
+      console.error("Error al eliminar comensal:", err);
     }
   };
 
@@ -158,15 +189,18 @@ function Confirmar({ confirmarAsistencia }) {
     const data = snap.exists() ? snap.data() : {};
 
     const confirmacionesAnteriores = data.confirmaciones || {};
-    const todosLosAsistentes = [...confirmadosLimpios, ...nombresNinos.filter(n => n.nombre.trim() !== "")];
+    const todosLosAsistentes = [
+      ...confirmadosLimpios.map(p => ({ ...p, esNino: false })),
+      ...nombresNinos.filter(n => n.nombre.trim() !== "").map(p => ({ ...p, esNino: true }))
+    ];
 
-    todosLosAsistentes.forEach((persona) => {
-      const id = `${user.uid}_${persona.nombre}_${Date.now()}`;
+    todosLosAsistentes.forEach((persona, index) => {
+      const id = `${user.uid}_${persona.nombre}_${index}_${Date.now()}`;
       confirmacionesAnteriores[id] = {
         email: user.email,
         nombres: [`${persona.nombre} ${persona.apellidos}`.trim()],
         detalles: [persona],
-        numNinos,
+        numNinos: persona.esNino ? 1 : 0,
         agregadoPor: user.displayName || user.email,
       };
     });
@@ -377,17 +411,17 @@ function Confirmar({ confirmarAsistencia }) {
                     {d.nombre}
                     {isAdmin && (
                       <button
-                        onClick={() => eliminarConfirmacionPorUID(uid)}
+                        onClick={() => eliminarComensalEspecifico(uid, i)}
                         style={{
                           marginLeft: "0.5em",
                           background: "transparent",
                           border: "none",
-                          color: "#c00",
+                          color: "#888",
                           cursor: "pointer"
                         }}
-                        title="Eliminar confirmación"
+                        title="Eliminar solo este comensal"
                       >
-                        ❌
+                        🗑️
                       </button>
                     )}
                     {conf.numNinos > i && (
@@ -416,6 +450,23 @@ function Confirmar({ confirmarAsistencia }) {
                   )}
                 </div>
               ))}
+
+              {isAdmin && (
+                <button
+                  onClick={() => eliminarConfirmacionPorUID(uid)}
+                  style={{
+                    marginTop: "0.5em",
+                    backgroundColor: "#eee",
+                    border: "1px solid #ccc",
+                    borderRadius: "8px",
+                    padding: "0.25em 0.5em",
+                    fontSize: "0.8em",
+                    cursor: "pointer"
+                  }}
+                >
+                  ❌ Eliminar grupo completo
+                </button>
+              )}
               {isAdmin && typeof conf.numNinos === "number" && (
                 <div style={{ fontSize: "0.9em", color: "#31708f" }}>
                   Niños: {conf.numNinos}
