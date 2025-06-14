@@ -22,7 +22,7 @@ function Home() {
     // Si el usuario quiere cerrar sesión
      
     // (esto es sólo para dejar el comentario, la función va fuera del useEffect)
-  }, []);
+  }, [navigate]);
 
   // Si el usuario quiere cerrar sesión
   const cerrarSesion = () => {

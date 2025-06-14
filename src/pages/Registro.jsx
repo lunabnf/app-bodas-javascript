@@ -292,7 +292,7 @@ function Registro({ user }) {
       if (accion.tipoRaw) {
         try {
           await deleteDoc(doc(db, "bodas", "bodaPrincipal", accion.tipoRaw, id));
-        } catch (e) {
+        } catch {
           console.warn(`No se encontró documento en colección ${accion.tipoRaw} con id ${id}`);
         }
       }
@@ -464,6 +464,22 @@ function Registro({ user }) {
             >
               📥 Exportar Datos a JSON
             </button>
+            <br />
+            <button
+              className="admin-btn"
+              onClick={eliminarTodos}
+              style={{
+                backgroundColor: "#c62828",
+                color: "white",
+                border: "none",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "8px",
+                cursor: "pointer",
+                marginTop: "1rem"
+              }}
+            >
+              🗑️ Eliminar todos los datos
+            </button>
           </div>
         </section>
       </>
@@ -569,6 +585,22 @@ function Registro({ user }) {
         </div>
       </div>
       <section className="card">
+        <div style={{ textAlign: "right", marginBottom: "1rem" }}>
+          <button
+            className="admin-btn"
+            onClick={eliminarTodos}
+            style={{
+              backgroundColor: "#c62828",
+              color: "white",
+              border: "none",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "8px",
+              cursor: "pointer"
+            }}
+          >
+            🗑️ Eliminar todos los datos
+          </button>
+        </div>
         <h2 style={{ marginBottom: "2rem" }}>Registro de Actividades</h2>
         {Object.entries(accionesPorTipo)
           .filter(([tipo]) => filtro === "todos" || tipo === filtro)
