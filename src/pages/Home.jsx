@@ -20,7 +20,7 @@ function Home() {
       navigate("/");
     }
     // Si el usuario quiere cerrar sesión
-    // eslint-disable-next-line
+     
     // (esto es sólo para dejar el comentario, la función va fuera del useEffect)
   }, []);
 
@@ -96,6 +96,8 @@ function Home() {
       };
 
       localStorage.setItem("user", JSON.stringify(nuevoUsuario));
+      // Guardar usuario en Firestore también
+      await addDoc(collection(getFirestore(getApp()), "usuarios"), nuevoUsuario);
       setUser(nuevoUsuario);
       navigate("/"); // Redirige a la home
     } catch (error) {

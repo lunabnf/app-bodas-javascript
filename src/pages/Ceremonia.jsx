@@ -58,7 +58,7 @@ const Ceremonia = () => {
       }
     };
     fetchData();
-    // eslint-disable-next-line
+     
   }, []);
 
   const guardarEnFirestore = async (nuevoNovio, nuevoNovia) => {

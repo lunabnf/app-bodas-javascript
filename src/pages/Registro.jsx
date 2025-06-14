@@ -37,7 +37,9 @@ import {
 // ---- Formulario para añadir administradores ----
 import React from "react";
 
-  // --- ESTADOS PARA FORMULARIO DE ADMIN ---
+// --- ESTADOS PARA FORMULARIO DE ADMIN ---
+
+function Registro({ user }) {
   const [nombreAdmin, setNombreAdmin] = useState("");
   const [correoAdmin, setCorreoAdmin] = useState("");
   const [agregandoAdmin, setAgregandoAdmin] = useState(false);
@@ -73,8 +75,6 @@ import React from "react";
     }
     setAgregandoAdmin(false);
   };
-
-function Registro({ user }) {
   useEffect(() => {
     const cargarHistorial = async () => {
       const ref = collection(db, "bodas", "bodaPrincipal", "historialCambios");

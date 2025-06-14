@@ -16,6 +16,18 @@ export default function Usuarios() {
     setResultadosFiltrados([]);
   }, []);
 
+  // Nueva función para manejar cambios en la búsqueda
+  const handleBusquedaChange = (e) => {
+    const valor = e.target.value.toLowerCase();
+    setBusqueda(valor);
+    setResultadosFiltrados(
+      usuarios.filter((usuario) =>
+        usuario.nombre?.toLowerCase().includes(valor) ||
+        usuario.email?.toLowerCase().includes(valor)
+      )
+    );
+  };
+
   const cargarUsuarios = async () => {
     const snapshot = await getDocs(collection(db, 'usuarios'));
     const lista = snapshot.docs
@@ -121,14 +133,7 @@ export default function Usuarios() {
           placeholder="Buscar por nombre o correo..."
           className="w-full p-2 border rounded"
           value={busqueda}
-          onChange={(e) => {
-            const valor = e.target.value.toLowerCase();
-            setBusqueda(valor);
-            setResultadosFiltrados(usuarios.filter((usuario) =>
-              usuario.nombre?.toLowerCase().includes(valor) ||
-              usuario.correo?.toLowerCase().includes(valor)
-            ));
-          }}
+          onChange={handleBusquedaChange}
         />
       </div>
 
@@ -136,6 +141,7 @@ export default function Usuarios() {
         {(busqueda ? resultadosFiltrados : usuarios).map((usuario) => (
           <div key={usuario.id} className="bg-white p-4 rounded shadow text-center">
             <div className="text-lg font-semibold text-gray-900">{usuario.nombre}</div>
+            <div className="text-sm text-gray-500">{usuario.email}</div>
             <div className="text-sm font-medium text-pink-600">Rol: {usuario.rol}</div>
             {usuario.codigo && (
               <div className="text-xs text-gray-500 mt-1">Código: {usuario.codigo}</div>
