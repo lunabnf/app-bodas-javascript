@@ -78,7 +78,7 @@ useEffect(() => {
               <>
                 {/* Botón flotante fijo para Mi Participación */}
                 <Link
-                  to="/miparticipacion"
+                  to={`/miparticipacion/${user?.uid}`}
                   style={{
                     position: "fixed",
                     top: "1rem",
@@ -346,7 +346,7 @@ function AppRoutes({ setUser, setRolUsuario, user, rolUsuario }) {
       <Route path="/registro" element={<Registro rolUsuario={rolUsuario} />} />
       <Route path="/ranking" element={<Ranking />} />
       <Route path="/chat" element={<Chat usuario={user?.displayName || "Anónimo"} />} />
-      <Route path="/miparticipacion" element={<MiParticipacion />} />
+      <Route path="/miparticipacion/:id" element={<MiParticipacion />} />
       <Route path="/checklist" element={<Checklist />} />
       <Route path="/usuarios" element={<Usuarios />} />
     </Routes>

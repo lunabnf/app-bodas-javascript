@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { useLocation } from "react-router-dom";
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { useParams } from "react-router-dom";
 
 export default function MiParticipacion() {
-  const query = useQuery();
-  const id = query.get("id");
+  const { id } = useParams();
   const [participacion, setParticipacion] = useState(null);
 
   useEffect(() => {
@@ -46,24 +41,29 @@ export default function MiParticipacion() {
         // Mesa
         const mesas = data.mesas || {};
         let mesaAsignada = "";
+        let asientoMesa = "";
         Object.entries(mesas).forEach(([nombreMesa, mesa]) => {
           if (mesa.personas?.includes(id)) {
             mesaAsignada = nombreMesa;
+            asientoMesa = (mesa.personas.indexOf(id) + 1).toString();
           }
         });
 
         // Ceremonia
         const ceremonia = data.ceremonia || {};
         let asientoCeremonia = "No asignado";
+        let numeroAsientoCeremonia = "";
         Object.entries(ceremonia).forEach(([zona, datos]) => {
           if (datos.personas?.includes(id)) {
             asientoCeremonia = zona;
+            numeroAsientoCeremonia = (datos.personas.indexOf(id) + 1).toString();
           }
         });
 
         setParticipacion({
           nombre: id,
           mesa: mesaAsignada || "No asignada",
+          asientoMesa,
           cancion: miCancion || "No propuesta",
           voto: miVoto || "No ha votado",
           cuestionario: miRespuestas ? "Sí" : "No",
@@ -71,12 +71,25 @@ export default function MiParticipacion() {
           asistencia: haConfirmado,
           desplazamiento,
           asientoCeremonia,
+          numeroAsientoCeremonia,
         });
       }
     };
 
     cargarDatos();
   }, [id]);
+
+  const [mostrarTooltip, setMostrarTooltip] = useState(false);
+
+  const tareasPendientes = [];
+  if (participacion?.asistencia !== "Sí") tareasPendientes.push("Confirmar asistencia");
+  if (participacion?.desplazamiento === "No solicitado") tareasPendientes.push("Solicitar desplazamiento");
+  if (participacion?.cancion === "No propuesta") tareasPendientes.push("Proponer canción");
+  if (participacion?.voto === "No ha votado") tareasPendientes.push("Votar en el ranking");
+  if (participacion?.cuestionario === "No") tareasPendientes.push("Responder cuestionario");
+  if (participacion?.fotoSubida === "No") tareasPendientes.push("Subir foto");
+  if (participacion?.mesa === "No asignada") tareasPendientes.push("Esperar asignación de mesa");
+  if (participacion?.asientoCeremonia === "No asignado") tareasPendientes.push("Esperar asignación en ceremonia");
 
   if (!id) return <p>No se ha proporcionado identificación del invitado.</p>;
   if (!participacion) return <p>Cargando datos...</p>;
@@ -86,6 +99,48 @@ export default function MiParticipacion() {
       <button onClick={() => window.history.back()} style={{ marginBottom: "1rem", background: "none", border: "none", color: "#007bff", cursor: "pointer", fontSize: "1rem" }}>
         ← Volver
       </button>
+      <div
+        onMouseEnter={() => setMostrarTooltip(true)}
+        onMouseLeave={() => setMostrarTooltip(false)}
+        style={{ position: "relative", display: "inline-block", marginBottom: "1rem" }}
+      >
+        <button style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: "1.2rem" }}>
+          👤
+        </button>
+        {mostrarTooltip && (
+          <div style={{
+            position: "absolute",
+            top: "2rem",
+            left: "0",
+            background: "white",
+            border: "1px solid #ccc",
+            padding: "1rem",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            zIndex: 10,
+            width: "300px"
+          }}>
+            <div style={{ marginBottom: "0.5rem" }}>
+              <strong>Estado:</strong> <span style={{ color: "green" }}>● Conectado</span>
+            </div>
+            <div style={{ marginBottom: "0.5rem" }}>
+              <strong>Rol:</strong> Invitado
+            </div>
+            <div>
+              <strong>Tareas pendientes:</strong>
+              <ul style={{ paddingLeft: "1.2rem" }}>
+                {tareasPendientes.length > 0 ? tareasPendientes.map((tarea, i) => (
+                  <li key={i}>
+                    <a href={tarea.includes("Confirmar") ? "/confirmar" : tarea.includes("desplazamiento") ? "/confirmar" : tarea.includes("canción") ? "/musica" : tarea.includes("ranking") ? "/ranking" : tarea.includes("cuestionario") ? "/cuestionario" : tarea.includes("foto") ? "/murofotos" : "#"} style={{ color: "#007bff", textDecoration: "underline" }}>
+                      {tarea}
+                    </a>
+                  </li>
+                )) : <li>Todas las tareas completadas 🎉</li>}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
       <div className="card">
         <h2>Tu participación en la boda</h2>
         <div className="participacion-info">
@@ -102,11 +157,13 @@ export default function MiParticipacion() {
               </a>
             )}
           </div>
+          <div className="info-box"><strong>Número de asiento en la mesa:</strong> {participacion.asientoMesa || "No asignado"}</div>
           <div className="info-box"><strong>Canción propuesta:</strong> {participacion.cancion}</div>
           <div className="info-box"><strong>Voto en el ranking:</strong> {participacion.voto}</div>
           <div className="info-box"><strong>¿Has respondido el cuestionario?:</strong> {participacion.cuestionario}</div>
           <div className="info-box"><strong>¿Has subido una foto?:</strong> {participacion.fotoSubida}</div>
           <div className="info-box"><strong>Asiento en la ceremonia:</strong> {participacion.asientoCeremonia}</div>
+          <div className="info-box"><strong>Número de asiento en ceremonia:</strong> {participacion.numeroAsientoCeremonia || "No asignado"}</div>
         </div>
         <style>{`
           .participacion-info {

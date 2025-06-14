@@ -107,6 +107,7 @@ function Mesas() {
             return (conf.detalles || []).map((det, i) => ({
               id: `${id}_${i}`,
               nombre: det.nombre || "",
+              alergias: det.alergias || "",
               agregadoPor: conf.agregadoPor || "",
             }));
           })
@@ -306,6 +307,11 @@ function Mesas() {
               onTouchEnd={() => {
                 setTimeout(() => setInvitadoArrastrado(null), 300);
               }}
+              onClick={() =>
+                alert(
+                  `👤 Nombre: ${invitado.nombre}\n📋 Alergias: ${invitado.alergias || "Ninguna"}\n👤 Confirmado por: ${invitado.agregadoPor || "Desconocido"}`
+                )
+              }
               style={{
                 background: mesas.some((mesa) =>
                   mesa.comensales.includes(invitado.nombre)
@@ -315,19 +321,23 @@ function Mesas() {
                 padding: "0.5em 1em",
                 borderRadius: "1em",
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                cursor: usuario.rol === "admin" || usuario.rol === "moderador" ? "grab" : "not-allowed",
+                cursor:
+                  usuario.rol === "admin" || usuario.rol === "moderador"
+                    ? "grab"
+                    : "not-allowed",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 fontSize: "0.95em",
-                touchAction: "none"
+                touchAction: "none",
+                position: "relative"
               }}
             >
-              {invitado.nombre}
+              <div>{invitado.nombre}</div>
               {invitado.agregadoPor && (
-                <span style={{ fontSize: "0.75em", color: "#888" }}>
+                <div style={{ fontSize: "0.75em", color: "#888" }}>
                   <i>{invitado.agregadoPor}</i>
-                </span>
+                </div>
               )}
             </div>
           ))}
