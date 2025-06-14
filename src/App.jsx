@@ -128,102 +128,114 @@ useEffect(() => {
             )}
             <header className="app-header">
               <h1 className="titulo-app">{nombreBoda}</h1>
+              {/* Botón flotante fijo para abrir menú principal */}
               <div
-                style={{ position: 'relative' }}
-                onMouseEnter={() => setMenuOpen(true)}
-                onMouseLeave={() => setMenuOpen(false)}
+                style={{
+                  position: "fixed",
+                  top: "1rem",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 1000
+                }}
               >
                 <button
-                  className="menu-toggle"
                   onClick={() => setMenuOpen(prev => !prev)}
+                  style={{
+                    background: "#fff",
+                    borderRadius: "20px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    fontWeight: "bold",
+                    color: "#007bff",
+                    border: "none",
+                  }}
                 >
-                  ☰
+                  MENÚ
                 </button>
-
-                {menuOpen && (
-                  <div>
-                    <nav className="fixed top-24 left-4 md:left-auto md:right-4 bg-white shadow-2xl rounded-3xl p-6 w-11/12 max-w-sm z-50">
-                      <div className="flex flex-col gap-3">
-                        <button onClick={() => setMenuSection("necesitas")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "necesitas" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
-                          NECESITAS SABER
-                        </button>
-                        <button onClick={() => setMenuSection("saberMas")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "saberMas" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
-                          PARA SABER MÁS
-                        </button>
-                        <button onClick={() => setMenuSection("modoPro")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "modoPro" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
-                          MODO PRO
-                        </button>
-                      </div>
-
-                      <div className="mt-6 flex flex-col gap-4">
-                        {menuSection === "necesitas" && (
-                          <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                            <Link
-                              to="/programa"
-                              onClick={() => setMenuOpen(false)}
-                              className="submenu-link"
-                            >
-                              Programa
-                            </Link>
-                            <Link
-                              to="/info"
-                              onClick={() => setMenuOpen(false)}
-                              className="submenu-link"
-                            >
-                              Info
-                            </Link>
-                            <Link
-                              to="/confirmar"
-                              onClick={() => setMenuOpen(false)}
-                              className="submenu-link"
-                            >
-                              Confirmar
-                            </Link>
-                            <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Mesas
-                            </Link>
-                            <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Asientos de la Ceremonia
-                            </Link>
-                          </div>
-                        )}
-                        {menuSection === "saberMas" && (
-                          <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                            <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Cuenta Atrás
-                            </Link>
-                            <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Música
-                            </Link>
-                            <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Invitación
-                            </Link>
-                            <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Desplazamiento
-                            </Link>
-                          </div>
-                        )}
-                        {menuSection === "modoPro" && (
-                          <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                            <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Ranking de Invitados
-                            </Link>
-                            <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Muro de Fotos
-                            </Link>
-                            <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Chat entre Invitados
-                            </Link>
-                            <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Cuestionario
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                    </nav>
-                  </div>
-                )}
               </div>
+              {menuOpen && (
+                <div>
+                  <nav className="fixed top-24 left-4 md:left-auto md:right-4 bg-white shadow-2xl rounded-3xl p-6 w-11/12 max-w-sm z-50">
+                    <div className="flex flex-col gap-3">
+                      <button onClick={() => setMenuSection("necesitas")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "necesitas" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
+                        NECESITAS SABER
+                      </button>
+                      <button onClick={() => setMenuSection("saberMas")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "saberMas" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
+                        PARA SABER MÁS
+                      </button>
+                      <button onClick={() => setMenuSection("modoPro")} className={`rounded-xl py-3 px-4 font-bold shadow-md ${menuSection === "modoPro" ? "bg-pink-400 text-white" : "bg-pink-100 text-pink-800"}`}>
+                        MODO PRO
+                      </button>
+                    </div>
+
+                    <div className="mt-6 flex flex-col gap-4">
+                      {menuSection === "necesitas" && (
+                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
+                          <Link
+                            to="/programa"
+                            onClick={() => setMenuOpen(false)}
+                            className="submenu-link"
+                          >
+                            Programa
+                          </Link>
+                          <Link
+                            to="/info"
+                            onClick={() => setMenuOpen(false)}
+                            className="submenu-link"
+                          >
+                            Info
+                          </Link>
+                          <Link
+                            to="/confirmar"
+                            onClick={() => setMenuOpen(false)}
+                            className="submenu-link"
+                          >
+                            Confirmar
+                          </Link>
+                          <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Mesas
+                          </Link>
+                          <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Asientos de la Ceremonia
+                          </Link>
+                        </div>
+                      )}
+                      {menuSection === "saberMas" && (
+                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
+                          <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Cuenta Atrás
+                          </Link>
+                          <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Música
+                          </Link>
+                          <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Invitación
+                          </Link>
+                          <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Desplazamiento
+                          </Link>
+                        </div>
+                      )}
+                      {menuSection === "modoPro" && (
+                        <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
+                          <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Ranking de Invitados
+                          </Link>
+                          <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Muro de Fotos
+                          </Link>
+                          <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Chat entre Invitados
+                          </Link>
+                          <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">
+                            Cuestionario
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  </nav>
+                </div>
+              )}
             </header>
             {user ? (
               <AppRoutes
