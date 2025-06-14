@@ -2,6 +2,7 @@ import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 function Home() {
   const navigate = useNavigate();
@@ -66,6 +67,43 @@ function Home() {
     // window.location.reload(); // Eliminado para mantener el estado sin recargar
   };
 
+  const loginConGoogle = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const userData = result.user;
+
+      const db = getFirestore(getApp());
+      const usuariosRef = collection(db, "usuarios");
+      const snapshot = await getDocs(usuariosRef);
+
+      const usuarioExistente = snapshot.docs.find(
+        (doc) => doc.data().email === userData.email && doc.data().rol === "admin"
+      );
+
+      if (!usuarioExistente) {
+        alert("Este correo no está autorizado como administrador.");
+        return;
+      }
+
+      const nuevoUsuario = {
+        nombre: userData.displayName || "Sin nombre",
+        email: userData.email,
+        rol: "admin",
+        uid: userData.uid,
+        registrado: true,
+      };
+
+      localStorage.setItem("user", JSON.stringify(nuevoUsuario));
+      setUser(nuevoUsuario);
+      navigate("/"); // Redirige a la home
+    } catch (error) {
+      console.error("Error al iniciar sesión con Google:", error);
+      alert("Error al iniciar sesión con Google");
+    }
+  };
+
   return (
     <>
       {!user && (
@@ -115,6 +153,21 @@ function Home() {
             >
               Registrarme
             </button>
+            <div style={{ marginTop: "1rem" }}>
+              <button
+                onClick={loginConGoogle}
+                style={{
+                  padding: "0.5rem 1rem",
+                  background: "#4285F4",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer"
+                }}
+              >
+                Iniciar sesión con Google
+              </button>
+            </div>
           </div>
         </div>
       )}

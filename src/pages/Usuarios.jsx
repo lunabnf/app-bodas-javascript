@@ -7,16 +7,20 @@ const db = getFirestore(getApp());
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [codigoSecreto, setCodigoSecreto] = useState('');
+  const [nuevoAdmin, setNuevoAdmin] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
 
   useEffect(() => {
     cargarUsuarios();
+    setResultadosFiltrados([]);
   }, []);
 
   const cargarUsuarios = async () => {
     const snapshot = await getDocs(collection(db, 'usuarios'));
     const lista = snapshot.docs
-      .map((d) => ({ id: d.id, ...d.data() }))
-      .filter((usuario) => usuario.registrado === true);
+      .map((d) => ({ id: d.id, ...d.data() }));
+      //.filter((usuario) => usuario.registrado === true);
     setUsuarios(lista);
   };
 
@@ -54,6 +58,36 @@ export default function Usuarios() {
       <h1 className="text-2xl font-bold text-center mb-4">Gestión de Usuarios</h1>
 
       <div className="mb-6 bg-white p-4 rounded shadow max-w-md mx-auto">
+        <label className="block mb-2 font-medium text-gray-700">Añadir correo de administrador:</label>
+        <input
+          type="email"
+          value={nuevoAdmin}
+          onChange={(e) => setNuevoAdmin(e.target.value)}
+          className="w-full p-2 border rounded"
+          placeholder="Ej: admin@email.com"
+        />
+        <button
+          onClick={async () => {
+            if (!nuevoAdmin) return alert('Introduce un correo válido.');
+            const nuevoUsuario = {
+              nombre: nuevoAdmin.split('@')[0],
+              correo: nuevoAdmin,
+              rol: 'administrador',
+              registrado: true,
+              codigo: ''
+            };
+            await setDoc(doc(db, 'usuarios', nuevoAdmin), nuevoUsuario);
+            setUsuarios([...usuarios, { id: nuevoAdmin, ...nuevoUsuario }]);
+            setNuevoAdmin('');
+            alert('Administrador añadido.');
+          }}
+          className="mt-3 bg-green-600 text-white px-4 py-2 rounded w-full"
+        >
+          Añadir administrador
+        </button>
+      </div>
+
+      <div className="mb-6 bg-white p-4 rounded shadow max-w-md mx-auto">
         <label className="block mb-2 font-medium text-gray-700">Código secreto para acceso:</label>
         <input
           type="text"
@@ -81,8 +115,25 @@ export default function Usuarios() {
         </button>
       </div>
 
+      <div className="mb-4 max-w-md mx-auto">
+        <input
+          type="text"
+          placeholder="Buscar por nombre o correo..."
+          className="w-full p-2 border rounded"
+          value={busqueda}
+          onChange={(e) => {
+            const valor = e.target.value.toLowerCase();
+            setBusqueda(valor);
+            setResultadosFiltrados(usuarios.filter((usuario) =>
+              usuario.nombre?.toLowerCase().includes(valor) ||
+              usuario.correo?.toLowerCase().includes(valor)
+            ));
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-        {usuarios.map((usuario) => (
+        {(busqueda ? resultadosFiltrados : usuarios).map((usuario) => (
           <div key={usuario.id} className="bg-white p-4 rounded shadow text-center">
             <div className="text-lg font-semibold text-gray-900">{usuario.nombre}</div>
             <div className="text-sm font-medium text-pink-600">Rol: {usuario.rol}</div>

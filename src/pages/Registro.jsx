@@ -31,8 +31,48 @@ import {
   writeBatch,
   addDoc,
   setDoc,
-  getDoc
+  getDoc,
+  where
 } from "firebase/firestore";
+// ---- Formulario para añadir administradores ----
+import React from "react";
+
+  // --- ESTADOS PARA FORMULARIO DE ADMIN ---
+  const [nombreAdmin, setNombreAdmin] = useState("");
+  const [correoAdmin, setCorreoAdmin] = useState("");
+  const [agregandoAdmin, setAgregandoAdmin] = useState(false);
+
+  const handleAddAdmin = async (e) => {
+    e.preventDefault();
+    if (!nombreAdmin || !correoAdmin) {
+      alert("Por favor, completa ambos campos.");
+      return;
+    }
+    setAgregandoAdmin(true);
+    try {
+      // Verifica si ya existe un admin con ese correo
+      const q = query(collection(db, "usuarios"), where("email", "==", correoAdmin));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        alert("Ya existe un usuario con ese correo.");
+        setAgregandoAdmin(false);
+        return;
+      }
+      await addDoc(collection(db, "usuarios"), {
+        nombre: nombreAdmin,
+        email: correoAdmin,
+        rol: "admin",
+        codigo: "0000"
+      });
+      alert("Administrador añadido correctamente.");
+      setNombreAdmin("");
+      setCorreoAdmin("");
+    } catch (err) {
+      alert("Error al añadir administrador.");
+      console.error(err);
+    }
+    setAgregandoAdmin(false);
+  };
 
 function Registro({ user }) {
   useEffect(() => {
@@ -347,6 +387,40 @@ function Registro({ user }) {
         <section style={{ marginTop: "3rem" }}>
           <h2>Panel de Administración</h2>
 
+          {/* Formulario para añadir administradores */}
+          <div style={{ margin: "2rem auto", maxWidth: 400, background: "#f8f8f8", borderRadius: 8, padding: "1.5rem", boxShadow: "0 2px 8px #0001" }}>
+            <h3>Registrar nuevo administrador</h3>
+            <form onSubmit={handleAddAdmin} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <input
+                type="text"
+                placeholder="Nombre"
+                value={nombreAdmin}
+                onChange={e => setNombreAdmin(e.target.value)}
+                required
+                style={{ padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc" }}
+              />
+              <input
+                type="email"
+                placeholder="Correo"
+                value={correoAdmin}
+                onChange={e => setCorreoAdmin(e.target.value)}
+                required
+                style={{ padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc" }}
+              />
+              <button type="submit" disabled={agregandoAdmin}
+                style={{
+                  background: "#1976d2",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  padding: "0.6rem",
+                  cursor: agregandoAdmin ? "wait" : "pointer"
+                }}>
+                {agregandoAdmin ? "Añadiendo..." : "Añadir administrador"}
+              </button>
+            </form>
+          </div>
+
           {/* Botón para generar datos falsos */}
           <div style={{ marginTop: "1rem", textAlign: "center" }}>
             <button
@@ -401,6 +475,39 @@ function Registro({ user }) {
       {/* Panel de Administración */}
       <section style={{ textAlign: "center", marginBottom: "2rem" }}>
         <h2>Panel de Administración</h2>
+        {/* Formulario para añadir administradores */}
+        <div style={{ margin: "2rem auto", maxWidth: 400, background: "#f8f8f8", borderRadius: 8, padding: "1.5rem", boxShadow: "0 2px 8px #0001" }}>
+          <h3>Registrar nuevo administrador</h3>
+          <form onSubmit={handleAddAdmin} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nombreAdmin}
+              onChange={e => setNombreAdmin(e.target.value)}
+              required
+              style={{ padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc" }}
+            />
+            <input
+              type="email"
+              placeholder="Correo"
+              value={correoAdmin}
+              onChange={e => setCorreoAdmin(e.target.value)}
+              required
+              style={{ padding: "0.5rem", borderRadius: 4, border: "1px solid #ccc" }}
+            />
+            <button type="submit" disabled={agregandoAdmin}
+              style={{
+                background: "#1976d2",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                padding: "0.6rem",
+                cursor: agregandoAdmin ? "wait" : "pointer"
+              }}>
+              {agregandoAdmin ? "Añadiendo..." : "Añadir administrador"}
+            </button>
+          </form>
+        </div>
         <button
           style={{
             backgroundColor: "#1976d2",
