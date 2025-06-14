@@ -31,7 +31,7 @@ function CuentaAtras() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   const [mediaUrl, setMediaUrl] = useState(null);
   const [mediaType, setMediaType] = useState(null);
@@ -53,11 +53,11 @@ function CuentaAtras() {
         setMediaUrl(url);
         setMediaType(url.match(/\.(mp3|wav)$/) ? "audio" : "image");
       } catch (error) {
-        console.log("No hay media subida aún.");
+        console.log("No hay media subida aún.", error.message);
       }
     };
     fetchMedia();
-  }, []);
+  }, [storage]);
 
   const handleMediaUpload = async (e) => {
     const file = e.target.files[0];

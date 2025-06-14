@@ -182,13 +182,16 @@ useEffect(() => {
                             >
                               Confirmar
                             </Link>
+                            <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">
+                              Mesas
+                            </Link>
+                            <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">
+                              Asientos de la Ceremonia
+                            </Link>
                           </div>
                         )}
                         {menuSection === "saberMas" && (
                           <div className="flex flex-col items-stretch gap-4 mt-6 w-full">
-                            <Link to="/mesas" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Mesas
-                            </Link>
                             <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">
                               Cuenta Atrás
                             </Link>
@@ -197,9 +200,6 @@ useEffect(() => {
                             </Link>
                             <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">
                               Invitación
-                            </Link>
-                            <Link to="/ceremonia" onClick={() => setMenuOpen(false)} className="submenu-link">
-                              Asientos de la Ceremonia
                             </Link>
                             <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">
                               Desplazamiento
