@@ -85,9 +85,23 @@ useEffect(() => {
                   transform: "translateX(-50%)",
                   zIndex: 1000
                 }}
+                onMouseEnter={() => {
+                  clearTimeout(window.menuTimeout);
+                  setMenuOpen(true);
+                }}
+                onMouseLeave={() => {
+                  window.menuTimeout = setTimeout(() => {
+                    setMenuOpen(false);
+                  }, 500);
+                }}
               >
                 <button
-                  onClick={() => setMenuOpen(prev => !prev)}
+                  // onClick fallback para móviles (touch)
+                  onClick={() => {
+                    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                      setMenuOpen(prev => !prev);
+                    }
+                  }}
                   style={{
                     background: "#fff",
                     borderRadius: "20px",
@@ -116,6 +130,12 @@ useEffect(() => {
                     alignItems: "center"
                   }}
                   onClick={() => setMenuOpen(false)}
+                  onMouseEnter={() => clearTimeout(window.menuTimeout)}
+                  onMouseLeave={() => {
+                    window.menuTimeout = setTimeout(() => {
+                      setMenuOpen(false);
+                    }, 500);
+                  }}
                 >
                   <nav
                     className="bg-white shadow-2xl rounded-3xl p-6 w-11/12 max-w-sm"
@@ -247,7 +267,7 @@ useEffect(() => {
                 )}
               </div>
             </div>
-            {/* Botón flotante fijo para Organización (solo admin) con menú hamburguesa */}
+            {/* Botón flotante fijo para Organización (solo admin) con menú desplegable al pasar el ratón */}
             {rolUsuario === "admin" && (
               <div
                 style={{
@@ -256,10 +276,18 @@ useEffect(() => {
                   right: "4.5rem",
                   zIndex: 1000
                 }}
+                onMouseEnter={() => {
+                  clearTimeout(window.adminPanelTimeout);
+                  setMenuSection("adminPanel");
+                }}
+                onMouseLeave={() => {
+                  window.adminPanelTimeout = setTimeout(() => {
+                    setMenuSection(null);
+                  }, 500); // Espera de 500 ms antes de cerrar
+                }}
               >
                 <div style={{ position: "relative" }}>
-                  <button
-                    onClick={() => setMenuSection(prev => prev === "adminPanel" ? null : "adminPanel")}
+                  <div
                     style={{
                       background: "#fff",
                       borderRadius: "50%",
@@ -269,7 +297,6 @@ useEffect(() => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      textDecoration: "none",
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       color: "#007bff"
@@ -277,27 +304,35 @@ useEffect(() => {
                     title="Panel de Organización"
                   >
                     🛠️
-                  </button>
+                  </div>
                   {menuSection === "adminPanel" && (
-                    <div style={{
-                      position: "absolute",
-                      top: "3rem",
-                      right: 0,
-                      background: "#fff",
-                      borderRadius: "1rem",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                      padding: "1rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.5rem"
-                    }}>
-                      <Link to="/registro" onClick={() => setMenuSection(null)} className="submenu-link">
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "3rem",
+                        right: 0,
+                        background: "#fff",
+                        borderRadius: "1rem",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                        padding: "1rem",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0.5rem"
+                      }}
+                      onMouseEnter={() => clearTimeout(window.adminPanelTimeout)}
+                      onMouseLeave={() => {
+                        window.adminPanelTimeout = setTimeout(() => {
+                          setMenuSection(null);
+                        }, 500);
+                      }}
+                    >
+                      <Link to="/registro" className="submenu-link">
                         Registro de acciones
                       </Link>
-                      <Link to="/usuarios" onClick={() => setMenuSection(null)} className="submenu-link">
+                      <Link to="/usuarios" className="submenu-link">
                         Gestión de usuarios
                       </Link>
-                      <Link to="/checklist" onClick={() => setMenuSection(null)} className="submenu-link">
+                      <Link to="/checklist" className="submenu-link">
                         Panel de administración
                       </Link>
                     </div>
