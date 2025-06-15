@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import Programa from './pages/Programa';
 import Mesas from './pages/Mesas';
 import Info from './pages/Info';
@@ -415,35 +416,29 @@ useEffect(() => {
   );
 }
 
-import { useLocation } from 'react-router-dom';
 
 function AppRoutes({ setUser, setRolUsuario, user, rolUsuario }) {
   return (
     <Routes>
-      <Route path="/" element={
-        user ? (
-          <Home nombreBoda={"Boda E&L"} />
-        ) : (
-          <Home nombreBoda={"Boda E&L"} />
-        )
-      } />
-      <Route path="/programa" element={<Programa isAdmin={true} />} />
-      <Route path="/mesas" element={<Mesas isAdmin={true} />} />
-      <Route path="/info" element={<Info />} />
-      <Route path="/confirmar" element={new Date() < new Date('2025-07-15') ? <Confirmar /> : <div>El plazo para confirmar asistencia ha finalizado.</div>} />
-      <Route path="/invitacion" element={<Invitacion isAdmin={true} />} />
-      <Route path="/cuenta-atras" element={<CuentaAtras isAdmin={true} />} />
-      <Route path="/muro" element={<MuroDeFotos />} />
-      <Route path="/musica" element={new Date() < new Date('2025-07-15') ? <Musica /> : <div>El plazo para proponer canciones ha finalizado.</div>} />
-      <Route path="/cuestionario" element={new Date() < new Date('2025-07-15') ? <Cuestionario /> : <div>El cuestionario ya no está disponible.</div>} />
-      <Route path="/desplazamiento" element={<Desplazamiento isAdmin={true} />} />
-      <Route path="/ceremonia" element={<Ceremonia />} />
-      <Route path="/registro" element={<Registro rolUsuario={rolUsuario} />} />
-      <Route path="/ranking" element={<Ranking />} />
-      <Route path="/chat" element={<Chat usuario={user?.displayName || "Anónimo"} />} />
-      <Route path="/miparticipacion/:id" element={<MiParticipacion />} />
-      <Route path="/checklist" element={<Checklist />} />
-      <Route path="/usuarios" element={<Usuarios />} />
+      <Route path="/" element={user ? <Home nombreBoda={"Boda E&L"} /> : <Navigate to="/login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/programa" element={user ? <Programa isAdmin={true} /> : <Navigate to="/login" />} />
+      <Route path="/mesas" element={user ? <Mesas isAdmin={true} /> : <Navigate to="/login" />} />
+      <Route path="/info" element={user ? <Info /> : <Navigate to="/login" />} />
+      <Route path="/confirmar" element={user ? (new Date() < new Date('2025-07-15') ? <Confirmar /> : <div>El plazo para confirmar asistencia ha finalizado.</div>) : <Navigate to="/login" />} />
+      <Route path="/invitacion" element={user ? <Invitacion isAdmin={true} /> : <Navigate to="/login" />} />
+      <Route path="/cuenta-atras" element={user ? <CuentaAtras isAdmin={true} /> : <Navigate to="/login" />} />
+      <Route path="/muro" element={user ? <MuroDeFotos /> : <Navigate to="/login" />} />
+      <Route path="/musica" element={user ? (new Date() < new Date('2025-07-15') ? <Musica /> : <div>El plazo para proponer canciones ha finalizado.</div>) : <Navigate to="/login" />} />
+      <Route path="/cuestionario" element={user ? (new Date() < new Date('2025-07-15') ? <Cuestionario /> : <div>El cuestionario ya no está disponible.</div>) : <Navigate to="/login" />} />
+      <Route path="/desplazamiento" element={user ? <Desplazamiento isAdmin={true} /> : <Navigate to="/login" />} />
+      <Route path="/ceremonia" element={user ? <Ceremonia /> : <Navigate to="/login" />} />
+      <Route path="/registro" element={user ? <Registro rolUsuario={rolUsuario} /> : <Navigate to="/login" />} />
+      <Route path="/ranking" element={user ? <Ranking /> : <Navigate to="/login" />} />
+      <Route path="/chat" element={user ? <Chat usuario={user?.displayName || "Anónimo"} /> : <Navigate to="/login" />} />
+      <Route path="/miparticipacion/:id" element={user ? <MiParticipacion /> : <Navigate to="/login" />} />
+      <Route path="/checklist" element={user ? <Checklist /> : <Navigate to="/login" />} />
+      <Route path="/usuarios" element={user ? <Usuarios /> : <Navigate to="/login" />} />
     </Routes>
   );
   // 🚀 Complemento futuro: que el QR generado redirija a /miparticipacion con un parámetro único por invitado

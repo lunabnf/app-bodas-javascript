@@ -17,6 +17,16 @@ export default function Usuarios() {
   }, []);
 
   // Nueva función para manejar cambios en la búsqueda
+  useEffect(() => {
+    const cargarCodigoSecreto = async () => {
+      const snapshot = await getDocs(collection(db, 'usuarios'));
+      const admin = snapshot.docs.find(doc => doc.data().rol === 'administrador' && doc.data().codigoAcceso);
+      if (admin) {
+        setCodigoSecreto(admin.data().codigoAcceso);
+      }
+    };
+    cargarCodigoSecreto();
+  }, []);
   const handleBusquedaChange = (e) => {
     const valor = e.target.value.toLowerCase();
     setBusqueda(valor);
@@ -60,9 +70,16 @@ export default function Usuarios() {
     }
   };
 
-  const guardarCodigo = () => {
-    localStorage.setItem('codigoSecreto', codigoSecreto);
-    alert('Código secreto guardado.');
+  const guardarCodigo = async () => {
+    try {
+      await setDoc(doc(db, 'bodaPrincipal', 'configuracion', 'codigoAcceso'), {
+        valor: codigoSecreto,
+      });
+      alert('Código secreto guardado correctamente en configuración.');
+    } catch (error) {
+      console.error('Error al guardar el código secreto:', error);
+      alert('No se pudo guardar el código secreto.');
+    }
   };
 
   return (
@@ -86,7 +103,7 @@ export default function Usuarios() {
               correo: nuevoAdmin,
               rol: 'administrador',
               registrado: true,
-              codigo: ''
+              codigoAcceso: codigoSecreto
             };
             await setDoc(doc(db, 'usuarios', nuevoAdmin), nuevoUsuario);
             setUsuarios([...usuarios, { id: nuevoAdmin, ...nuevoUsuario }]);
@@ -114,9 +131,9 @@ export default function Usuarios() {
         >
           Guardar código secreto
         </button>
-        {localStorage.getItem('codigoSecreto') && (
+        {codigoSecreto && (
           <div className="mt-3 text-sm text-gray-700">
-            Código actual para registrarse: <span className="font-semibold">{localStorage.getItem('codigoSecreto')}</span>
+            Código actual para registrarse: <span className="font-semibold">{codigoSecreto}</span>
           </div>
         )}
         <button

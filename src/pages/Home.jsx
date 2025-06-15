@@ -2,14 +2,21 @@ import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
+let setCodigoDesdeRegistro;
 function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [codigo, setCodigo] = useState("");
+
+  // Permite actualizar el código desde fuera del componente
+  setCodigoDesdeRegistro = (valor) => {
+    setCodigo(valor);
+  };
   const [mantenerSesion, setMantenerSesion] = useState(true);
 
   useEffect(() => {
@@ -33,76 +40,49 @@ function Home() {
   };
 
   const registrarUsuario = async () => {
-    if (!nombre || !email || !codigo) return alert("Rellena todos los campos");
+    if (!nombre || !email || !password || !codigo) return alert("Rellena todos los campos");
 
-    const codigoGuardado = localStorage.getItem("codigoSecreto");
-    if (codigo !== codigoGuardado) {
-      alert("Código incorrecto. Pide a los novios que te lo confirmen.");
+    const db = getFirestore(getApp());
+    const auth = getAuth();
+
+    // Verificar código válido
+    const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
+    const codigosPermitidos = usuariosSnapshot.docs
+      .map(doc => doc.data().codigoAcceso)
+      .filter(c => c);
+
+    if (!codigosPermitidos.includes(codigo.trim())) {
+      alert("Código de invitado incorrecto.");
       return;
     }
 
-    const nuevoUsuario = {
-      nombre,
-      email,
-      rol: "invitado",
-      uid: `${nombre}-${Date.now()}`,
-      codigo,
-      registrado: true,
-    };
-
-    await addDoc(collection(getFirestore(getApp()), "usuarios"), nuevoUsuario);
-
-    console.log("Usuario registrado:", JSON.stringify(nuevoUsuario, null, 2));
-    setUser(nuevoUsuario);
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 500);
-
-    if (mantenerSesion) {
-      localStorage.setItem("user", JSON.stringify(nuevoUsuario));
-    } else {
-      sessionStorage.setItem("user", JSON.stringify(nuevoUsuario));
-    }
-
-    // window.location.reload(); // Eliminado para mantener el estado sin recargar
-  };
-
-  const loginConGoogle = async () => {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const userData = result.user;
-
-      const db = getFirestore(getApp());
-      const usuariosRef = collection(db, "usuarios");
-      const snapshot = await getDocs(usuariosRef);
-
-      const usuarioExistente = snapshot.docs.find(
-        (doc) => doc.data().email === userData.email && doc.data().rol === "admin"
-      );
-
-      if (!usuarioExistente) {
-        alert("Este correo no está autorizado como administrador.");
-        return;
-      }
-
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const nuevoUsuario = {
-        nombre: userData.displayName || "Sin nombre",
-        email: userData.email,
-        rol: "admin",
-        uid: userData.uid,
+        nombre,
+        email,
+        rol: "invitado",
+        uid: userCredential.user.uid,
         registrado: true,
+        codigoAcceso: codigo.trim(),
       };
 
-      localStorage.setItem("user", JSON.stringify(nuevoUsuario));
-      // Guardar usuario en Firestore también
-      await addDoc(collection(getFirestore(getApp()), "usuarios"), nuevoUsuario);
+      await addDoc(collection(db, "usuarios"), nuevoUsuario);
+
+      console.log("Usuario registrado:", JSON.stringify(nuevoUsuario, null, 2));
       setUser(nuevoUsuario);
-      navigate("/"); // Redirige a la home
+
+      if (mantenerSesion) {
+        localStorage.setItem("user", JSON.stringify(nuevoUsuario));
+      } else {
+        sessionStorage.setItem("user", JSON.stringify(nuevoUsuario));
+      }
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error);
-      alert("Error al iniciar sesión con Google");
+      alert("Error al registrar: " + error.message);
     }
   };
 
@@ -125,6 +105,13 @@ function Home() {
               placeholder="Tu email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              style={{ padding: "0.5rem", marginBottom: "0.5rem", width: "80%", maxWidth: "300px", border: "1px solid #ccc", borderRadius: "6px" }}
+            />
+            <input
+              type="password"
+              placeholder="Crea una contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               style={{ padding: "0.5rem", marginBottom: "0.5rem", width: "80%", maxWidth: "300px", border: "1px solid #ccc", borderRadius: "6px" }}
             />
             <input
@@ -155,21 +142,6 @@ function Home() {
             >
               Registrarme
             </button>
-            <div style={{ marginTop: "1rem" }}>
-              <button
-                onClick={loginConGoogle}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#4285F4",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer"
-                }}
-              >
-                Iniciar sesión con Google
-              </button>
-            </div>
           </div>
         </div>
       )}
@@ -226,3 +198,4 @@ function Home() {
 }
 
 export default Home;
+export { setCodigoDesdeRegistro };
