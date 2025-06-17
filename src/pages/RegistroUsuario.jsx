@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 const RegistroUsuario = () => {
@@ -35,7 +35,24 @@ const RegistroUsuario = () => {
         return;
       }
 
-      await createUserWithEmailAndPassword(auth, emailSimulado, password);
+      const usuariosRef = doc(db, "usuariosIndex", `${nombre.toLowerCase()}_${apellidos.toLowerCase()}`);
+      const usuarioExistente = await getDoc(usuariosRef);
+      if (usuarioExistente.exists()) {
+        setError("Ya existe un usuario registrado con ese nombre y apellidos.");
+        return;
+      }
+
+      const userCredential = await createUserWithEmailAndPassword(auth, emailSimulado, password);
+      const user = userCredential.user;
+      await setDoc(doc(db, "usuarios", user.uid), {
+        nombre,
+        apellidos,
+        email: emailSimulado,
+        rol: "invitado",
+      });
+
+      await setDoc(usuariosRef, { uid: user.uid });
+
       setRegistroExitoso(true);
       navigate("/home");
       setError("");
