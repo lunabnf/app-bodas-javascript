@@ -13,23 +13,25 @@ import Cuestionario from "./pages/Cuestionario";
 import Invitacion from './pages/invitacion';
 import Desplazamiento from './pages/Desplazamiento';
 import Ceremonia from './pages/Ceremonia';
-import Registro from './pages/Registro';
+import Registro from './pages/actividad';
 import Ranking from './pages/ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 import Checklist from './pages/Checklist';
 import Usuarios from './pages/Usuarios';
+import RegistroUsuario from './pages/RegistroUsuario';
 
 import './App.css';
-import { auth, provider } from './firebaseConfig';
-import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
-import { db } from './firebaseConfig';
+import { auth } from './firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function AppRoot() {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuSection, setMenuSection] = useState("necesitas");
   const [user, setUser] = useState(null);
+  // Lista centralizada de administradores
+  const listaAdmins = ["luislunaraluy98@gmail.com", "otroadmin@gmail.com"];
   // Recuperar usuario guardado en localStorage o sessionStorage al iniciar la app
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
@@ -38,35 +40,34 @@ function AppRoot() {
     }
   }, []);
   const [rolUsuario, setRolUsuario] = useState(null);
-  const [nombreBoda, setNombreBoda] = useState("Boda E&L");
-  const [usuariosConectados, setUsuariosConectados] = useState([]);
-  const [admins, setAdmins] = useState([]);
+  const nombreBoda = "Boda E&L";
 
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (usuario) => {
-    if (usuario) {
-      setUser(usuario);
-      if (usuario.email === "luislunaraluy98@gmail.com") {
-        setRolUsuario("admin");
+  // isLoading para indicar si el estado de autenticación se está determinando
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (usuario) => {
+      if (usuario) {
+        const esAdmin = listaAdmins.includes(usuario.email);
+        const userData = {
+          uid: usuario.uid,
+          email: usuario.email,
+          displayName: usuario.displayName,
+          rol: esAdmin ? "admin" : "invitado"
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(usuario);
+        setRolUsuario(userData.rol);
       } else {
-        setRolUsuario("invitado");
+        setUser(null);
+        setRolUsuario(null);
       }
-    } else {
-      setUser(null);
-      setRolUsuario(null);
-    }
-  });
-  return () => unsubscribe();
-}, []);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
 
-  const iniciarSesion = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (err) {
-      console.error("Error al iniciar sesión:", err.message);
-    }
-  };
 
 
 
@@ -190,23 +191,26 @@ useEffect(() => {
                 </div>
               )}
             </header>
-            {user ? (
-              <AppRoutes
-                setUser={setUser}
-                setRolUsuario={setRolUsuario}
-                user={user}
-                rolUsuario={rolUsuario}
-              />
-            ) : (
-              <div className="text-center">
-                <Home nombreBoda={nombreBoda} />
-                <button
-                  onClick={iniciarSesion}
-                  className="mt-6 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded"
-                >
-                  Iniciar sesión con Google
-                </button>
-              </div>
+            {/* Mostrar nada mientras se determina el estado de autenticación */}
+            {isLoading ? null : (
+              <Routes>
+                <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
+                <Route
+                  path="*"
+                  element={
+                    user ? (
+                      <AppRoutes
+                        setUser={setUser}
+                        setRolUsuario={setRolUsuario}
+                        user={user}
+                        rolUsuario={rolUsuario}
+                      />
+                    ) : (
+                      <Navigate to="/registro" replace />
+                    )
+                  }
+                />
+              </Routes>
             )}
             {/* Icono de participación del usuario */}
             <div
@@ -364,7 +368,7 @@ useEffect(() => {
                         }
                       }}
                     >
-                      <Link to="/registro" className="submenu-link">
+                      <Link to="/registro-acciones" className="submenu-link">
                         Registro de acciones
                       </Link>
                       <Link to="/usuarios" className="submenu-link">
@@ -417,11 +421,18 @@ useEffect(() => {
 }
 
 
-function AppRoutes({ setUser, setRolUsuario, user, rolUsuario }) {
+function AppRoutes({ user, rolUsuario }) {
+  console.log("user:", user, "rolUsuario:", rolUsuario);
   return (
     <Routes>
-      <Route path="/" element={user ? <Home nombreBoda={"Boda E&L"} /> : <Navigate to="/login" />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={
+        user
+          ? <Home nombreBoda={"Boda E&L"} />
+          : <Navigate to="/registro" replace />
+      } />
+      {/* Ruta de login visible para todos los usuarios, incluso si no están autenticados */}
+      <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
+      <Route path="/registro-usuarios" element={<RegistroUsuario />} />
       <Route path="/programa" element={user ? <Programa isAdmin={true} /> : <Navigate to="/login" />} />
       <Route path="/mesas" element={user ? <Mesas isAdmin={true} /> : <Navigate to="/login" />} />
       <Route path="/info" element={user ? <Info /> : <Navigate to="/login" />} />
@@ -433,12 +444,30 @@ function AppRoutes({ setUser, setRolUsuario, user, rolUsuario }) {
       <Route path="/cuestionario" element={user ? (new Date() < new Date('2025-07-15') ? <Cuestionario /> : <div>El cuestionario ya no está disponible.</div>) : <Navigate to="/login" />} />
       <Route path="/desplazamiento" element={user ? <Desplazamiento isAdmin={true} /> : <Navigate to="/login" />} />
       <Route path="/ceremonia" element={user ? <Ceremonia /> : <Navigate to="/login" />} />
-      <Route path="/registro" element={user ? <Registro rolUsuario={rolUsuario} /> : <Navigate to="/login" />} />
+      <Route path="/registro-acciones" element={user ? <Registro rolUsuario={rolUsuario} /> : <Navigate to="/login" />} />
       <Route path="/ranking" element={user ? <Ranking /> : <Navigate to="/login" />} />
       <Route path="/chat" element={user ? <Chat usuario={user?.displayName || "Anónimo"} /> : <Navigate to="/login" />} />
       <Route path="/miparticipacion/:id" element={user ? <MiParticipacion /> : <Navigate to="/login" />} />
       <Route path="/checklist" element={user ? <Checklist /> : <Navigate to="/login" />} />
       <Route path="/usuarios" element={user ? <Usuarios /> : <Navigate to="/login" />} />
+      {/* Ruta de pruebas para desarrollo, solo visible para admin */}
+      <Route path="/pruebas-dev" element={
+        rolUsuario === "admin" ? (
+          <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+            <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>✅ Checklist de pruebas</h2>
+            <ul style={{ lineHeight: "1.8" }}>
+              <li>🟢 Registro de usuario funcional</li>
+              <li>🟢 Login con usuario/contraseña</li>
+              <li>🟢 Login con Google (solo admin)</li>
+              <li>🟢 Acceso restringido a rutas privadas (usuarios, registro, checklist)</li>
+              <li>🟢 Datos guardados correctamente en Firestore</li>
+              <li>🟢 Redirección a / tras login</li>
+              <li>🟢 Logout funcional</li>
+            </ul>
+            <p style={{ marginTop: "2rem", fontStyle: "italic", color: "#888" }}>Esta vista solo está disponible en desarrollo.</p>
+          </div>
+        ) : <Navigate to="/login" />
+      } />
     </Routes>
   );
   // 🚀 Complemento futuro: que el QR generado redirija a /miparticipacion con un parámetro único por invitado

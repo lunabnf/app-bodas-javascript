@@ -1,24 +1,42 @@
-
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
+import { useNavigate, Link } from 'react-router-dom';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../firebaseConfig';
 
 const Login = () => {
+  const listaAdmins = ["luislunaraluy98@gmail.com"];
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const esAdmin = listaAdmins.includes(email);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem('usuarioLogueado', JSON.stringify(userCredential.user));
+      const docRef = doc(db, 'usuarios', userCredential.user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const datosUsuario = docSnap.data();
+        localStorage.setItem('usuarioLogueado', JSON.stringify({
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          rol: datosUsuario.rol || 'invitado'
+        }));
+      } else {
+        localStorage.setItem('usuarioLogueado', JSON.stringify({
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          rol: 'invitado'
+        }));
+      }
       navigate('/home');
-    } catch (err) {
+    } catch {
       setError('Error al iniciar sesión. Revisa tu correo y contraseña.');
     }
   };
@@ -42,6 +60,43 @@ const Login = () => {
           required
         />
         <button type="submit">Entrar</button>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              const provider = new GoogleAuthProvider();
+              const result = await signInWithPopup(auth, provider);
+              const correo = result.user.email;
+
+              if (!listaAdmins.includes(correo)) {
+                setError("Este correo no tiene permisos de administrador.");
+                return;
+              }
+
+              localStorage.setItem('usuarioLogueado', JSON.stringify({
+                uid: result.user.uid,
+                email: result.user.email,
+                rol: 'admin'
+              }));
+              navigate('/home');
+            } catch (err) {
+              setError("Error al iniciar sesión con Google.");
+            }
+          }}
+          style={{
+            backgroundColor: '#dc3545',
+            color: 'white',
+            padding: '0.5rem 1.5rem',
+            borderRadius: '1rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem'
+          }}
+        >
+          Entrar con Google (solo admins)
+        </button>
+        <p style={{ marginTop: '1rem' }}>
+          ¿No tienes cuenta? <Link to="/registro-usuarios">Regístrate aquí</Link>
+        </p>
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>
