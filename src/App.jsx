@@ -72,6 +72,14 @@ function AppRoot() {
 
 
 
+  // Mostrar mensaje de carga mientras isLoading sea verdadero
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '3rem', fontFamily: 'Playfair Display, serif', color: '#5C5470' }}>
+        Cargando...
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
       <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">

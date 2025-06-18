@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 export default function MiParticipacion() {
   const { id } = useParams();
   const [participacion, setParticipacion] = useState(null);
+  const [mostrarTooltip, setMostrarTooltip] = useState(false);
+  const [rolUsuario, setRolUsuario] = useState("Invitado");
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -60,6 +62,8 @@ export default function MiParticipacion() {
           }
         });
 
+        setRolUsuario(data.usuarios?.[id]?.rol || "Invitado");
+
         setParticipacion({
           nombre: data.usuarios?.[id]?.nombre && data.usuarios?.[id]?.apellidos
             ? `${data.usuarios[id].nombre} ${data.usuarios[id].apellidos}`
@@ -80,8 +84,6 @@ export default function MiParticipacion() {
 
     cargarDatos();
   }, [id]);
-
-  const [mostrarTooltip, setMostrarTooltip] = useState(false);
 
   const tareasPendientes = [];
   if (participacion?.asistencia !== "Sí") tareasPendientes.push("Confirmar asistencia");
@@ -104,69 +106,64 @@ export default function MiParticipacion() {
       <div
         onMouseEnter={() => setMostrarTooltip(true)}
         onMouseLeave={() => setMostrarTooltip(false)}
+        onClick={() => setMostrarTooltip(!mostrarTooltip)}
         style={{
           position: "fixed",
           top: "1rem",
           left: "1rem",
           zIndex: 1000,
-          display: "inline-block"
+          display: "inline-block",
+          background: "white",
+          border: "1px solid #ccc",
+          padding: "1rem",
+          borderRadius: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          width: "300px",
+          cursor: "pointer",
+          userSelect: "none",
+        }}
+        aria-label="Mi perfil y tareas pendientes"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setMostrarTooltip(!mostrarTooltip);
+          }
         }}
       >
-        <button
-          style={{
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "1.5rem"
-          }}
-        >
-          👤
-        </button>
-        {mostrarTooltip && (
-          <div
-            style={{
-              position: "absolute",
-              top: "2rem",
-              left: "0",
-              background: "white",
-              border: "1px solid #ccc",
-              padding: "1rem",
-              borderRadius: "10px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              width: "300px"
-            }}
-          >
-            <div style={{ marginBottom: "0.5rem" }}>
-              <strong>Estado:</strong> <span style={{ color: "green" }}>● Conectado</span>
-            </div>
-            <div style={{ marginBottom: "0.5rem" }}>
-              <strong>Rol:</strong> Invitado
-            </div>
-            <div>
-              <strong>Tareas pendientes:</strong>
-              <ul style={{ paddingLeft: "1.2rem" }}>
-                {tareasPendientes.length > 0 ? tareasPendientes.map((tarea, i) => (
-                  <li key={i}>
-                    <a
-                      href={
-                        tarea.includes("Confirmar") ? "/confirmar"
-                        : tarea.includes("desplazamiento") ? "/confirmar"
-                        : tarea.includes("canción") ? "/musica"
-                        : tarea.includes("ranking") ? "/ranking"
-                        : tarea.includes("cuestionario") ? "/cuestionario"
-                        : tarea.includes("foto") ? "/murofotos"
-                        : "#"
-                      }
-                      style={{ color: "#007bff", textDecoration: "underline" }}
-                    >
-                      {tarea}
-                    </a>
-                  </li>
-                )) : <li>Todas las tareas completadas 🎉</li>}
-              </ul>
-            </div>
-          </div>
-        )}
+        <div style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "0.7rem", color: "#5C5470" }}>
+          👤 Mi perfil
+        </div>
+        <div style={{ marginBottom: "0.5rem" }}>
+          <strong>Estado:</strong> <span style={{ color: "green" }}>● Conectado</span>
+        </div>
+        <div style={{ marginBottom: "0.5rem" }}>
+          <strong>Rol:</strong> {rolUsuario}
+        </div>
+        <div className={mostrarTooltip ? "tooltip-transicion" : "tooltip-oculto"}>
+          <strong>Tareas pendientes:</strong>
+          <ul style={{ paddingLeft: "1.2rem" }}>
+            {tareasPendientes.length > 0 ? tareasPendientes.map((tarea, i) => (
+              <li key={i}>
+                <a
+                  href={
+                    tarea.includes("Confirmar") ? "/confirmar"
+                    : tarea.includes("desplazamiento") ? "/confirmar"
+                    : tarea.includes("canción") ? "/musica"
+                    : tarea.includes("ranking") ? "/ranking"
+                    : tarea.includes("cuestionario") ? "/cuestionario"
+                    : tarea.includes("foto") ? "/murofotos"
+                    : "#"
+                  }
+                  style={{ color: "#007bff", textDecoration: "underline" }}
+                >
+                  {tarea}
+                </a>
+              </li>
+            )) : <li>Todas las tareas completadas 🎉</li>}
+          </ul>
+        </div>
       </div>
       <div className="card">
         <h2>Tu participación en la boda</h2>
@@ -205,6 +202,19 @@ export default function MiParticipacion() {
             padding: 1rem;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             font-size: 1rem;
+          }
+        `}</style>
+        <style>{`
+          .tooltip-transicion {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 1;
+            transform: translateY(0);
+          }
+
+          .tooltip-oculto {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
           }
         `}</style>
       </div>

@@ -11,7 +11,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const esAdmin = listaAdmins.includes(email);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -79,7 +78,7 @@ const Login = () => {
                 rol: 'admin'
               }));
               navigate('/home');
-            } catch (err) {
+            } catch {
               setError("Error al iniciar sesión con Google.");
             }
           }}

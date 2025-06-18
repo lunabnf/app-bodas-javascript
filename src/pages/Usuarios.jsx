@@ -1,24 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig'; // asegúrate que esté bien configurado
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [codigoInvitacion, setCodigoInvitacion] = useState('');
 
   useEffect(() => {
-    const obtenerUsuarios = async () => {
+    const obtenerDatos = async () => {
       const usuariosSnapshot = await getDocs(collection(db, 'usuarios'));
       const usuariosList = usuariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsuarios(usuariosList);
+
+      const configRef = doc(db, 'config', 'codigoInvitacion');
+      const configSnap = await getDoc(configRef);
+      if (configSnap.exists()) {
+        setCodigoInvitacion(configSnap.data().codigo);
+      }
     };
 
-    obtenerUsuarios();
+    obtenerDatos();
   }, []);
 
   const guardarCodigo = async () => {
     const configRef = doc(db, 'config', 'codigoInvitacion');
-    await updateDoc(configRef, { codigo: codigoInvitacion });
+    await setDoc(configRef, { codigo: codigoInvitacion }, { merge: true });
     alert('Código actualizado');
   };
 
@@ -36,6 +42,20 @@ function Usuarios() {
         <button onClick={guardarCodigo} className="ml-2 px-4 py-1 bg-blue-500 text-white">
           Guardar
         </button>
+        {codigoInvitacion && (
+          <div className="mt-2 text-sm text-gray-700">
+            Código actual para invitados: <strong>{codigoInvitacion}</strong>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(codigoInvitacion);
+                alert("Código copiado al portapapeles");
+              }}
+              className="ml-2 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+            >
+              Copiar
+            </button>
+          </div>
+        )}
       </div>
       <ul>
         {usuarios.map((usuario) => (

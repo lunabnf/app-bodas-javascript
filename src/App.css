@@ -175,15 +175,6 @@ main {
   letter-spacing: 1px;
 }
 
-.vertical-menu {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 1rem 2rem;
-  gap: 1rem;
-}
-
 .vertical-menu a {
   margin: 0.3rem;
   padding: 0.6rem 1rem;

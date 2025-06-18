@@ -1,10 +1,9 @@
-import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
+import { collection, getFirestore, addDoc, getDoc, doc } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 
-let setCodigoDesdeRegistro;
 function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -12,11 +11,8 @@ function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [codigo, setCodigo] = useState("");
+  const [codigoFirebase, setCodigoFirebase] = useState("");
 
-  // Permite actualizar el código desde fuera del componente
-  setCodigoDesdeRegistro = (valor) => {
-    setCodigo(valor);
-  };
   const [mantenerSesion, setMantenerSesion] = useState(true);
 
   useEffect(() => {
@@ -29,6 +25,15 @@ function Home() {
     // Si el usuario quiere cerrar sesión
      
     // (esto es sólo para dejar el comentario, la función va fuera del useEffect)
+    // Obtener código de invitación desde Firebase
+    (async () => {
+      const db = getFirestore();
+      const docRef = doc(db, "config", "codigoInvitacion");
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        setCodigoFirebase(snap.data().codigo);
+      }
+    })();
   }, [navigate]);
 
   // Si el usuario quiere cerrar sesión
@@ -45,13 +50,8 @@ function Home() {
     const db = getFirestore(getApp());
     const auth = getAuth();
 
-    // Verificar código válido
-    const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
-    const codigosPermitidos = usuariosSnapshot.docs
-      .map(doc => doc.data().codigoAcceso)
-      .filter(c => c);
-
-    if (!codigosPermitidos.includes(codigo.trim())) {
+    // Verificar código válido contra el valor de Firebase
+    if (codigo.trim() !== codigoFirebase.trim()) {
       alert("Código de invitado incorrecto.");
       return;
     }
@@ -198,4 +198,3 @@ function Home() {
 }
 
 export default Home;
-export { setCodigoDesdeRegistro };
