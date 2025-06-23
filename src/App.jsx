@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import AppRoutes from './routes/AppRoutes';
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -22,50 +23,16 @@ import Usuarios from './pages/Usuarios';
 import RegistroUsuario from './pages/RegistroUsuario';
 
 import './App.css';
-import { auth } from './firebaseConfig';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from './AuthProvider';
 
 function AppRoot() {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuSection, setMenuSection] = useState("necesitas");
-  const [user, setUser] = useState(null);
-  // Lista centralizada de administradores
+  const { user, loading: isLoading } = useAuth();
   const listaAdmins = ["luislunaraluy98@gmail.com", "otroadmin@gmail.com"];
-  // Recuperar usuario guardado en localStorage o sessionStorage al iniciar la app
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
-  const [rolUsuario, setRolUsuario] = useState(null);
+  const rolUsuario = user && listaAdmins.includes(user.email) ? "admin" : "invitado";
   const nombreBoda = "Boda E&L";
-
-  // isLoading para indicar si el estado de autenticación se está determinando
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (usuario) => {
-      if (usuario) {
-        const esAdmin = listaAdmins.includes(usuario.email);
-        const userData = {
-          uid: usuario.uid,
-          email: usuario.email,
-          displayName: usuario.displayName,
-          rol: esAdmin ? "admin" : "invitado"
-        };
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(usuario);
-        setRolUsuario(userData.rol);
-      } else {
-        setUser(null);
-        setRolUsuario(null);
-      }
-      setIsLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
 
 
 
@@ -409,23 +376,15 @@ function AppRoot() {
                   </>
                 )}
                 <Routes>
+                  <Route path="/" element={<Navigate to={user ? "/programa" : "/registro-usuarios"} replace />} />
                   <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/registro-usuarios" element={<RegistroUsuario />} />
-                  <Route
-                    path="*"
-                    element={
-                      user ? (
-                        <AppRoutes
-                          setUser={setUser}
-                          setRolUsuario={setRolUsuario}
-                          user={user}
-                          rolUsuario={rolUsuario}
-                        />
-                      ) : (
-                        <Navigate to="/registro-usuarios" replace />
-                      )
-                    }
-                  />
+                  {user && (
+                    <Route path="*" element={<AppRoutes user={user} rolUsuario={rolUsuario} />} />
+                  )}
+                  {!user && (
+                    <Route path="*" element={<Navigate to="/registro-usuarios" replace />} />
+                  )}
                 </Routes>
               </>
             )}
@@ -437,56 +396,5 @@ function AppRoot() {
 }
 
 
-function AppRoutes({ user, rolUsuario }) {
-  console.log("user:", user, "rolUsuario:", rolUsuario);
-  return (
-    <Routes>
-      <Route path="/" element={
-        user
-          ? <Home nombreBoda={"Boda E&L"} />
-          : <Navigate to="/registro" replace />
-      } />
-      {/* Ruta de login visible para todos los usuarios, incluso si no están autenticados */}
-      <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
-      <Route path="/registro-usuarios" element={<RegistroUsuario />} />
-      <Route path="/programa" element={user ? <Programa isAdmin={true} /> : <Navigate to="/login" />} />
-      <Route path="/mesas" element={user ? <Mesas isAdmin={true} /> : <Navigate to="/login" />} />
-      <Route path="/info" element={user ? <Info /> : <Navigate to="/login" />} />
-      <Route path="/confirmar" element={user ? (new Date() < new Date('2025-07-15') ? <Confirmar /> : <div>El plazo para confirmar asistencia ha finalizado.</div>) : <Navigate to="/login" />} />
-      <Route path="/invitacion" element={user ? <Invitacion isAdmin={true} /> : <Navigate to="/login" />} />
-      <Route path="/cuenta-atras" element={user ? <CuentaAtras isAdmin={true} /> : <Navigate to="/login" />} />
-      <Route path="/muro" element={user ? <MuroDeFotos /> : <Navigate to="/login" />} />
-      <Route path="/musica" element={user ? (new Date() < new Date('2025-07-15') ? <Musica /> : <div>El plazo para proponer canciones ha finalizado.</div>) : <Navigate to="/login" />} />
-      <Route path="/cuestionario" element={user ? (new Date() < new Date('2025-07-15') ? <Cuestionario /> : <div>El cuestionario ya no está disponible.</div>) : <Navigate to="/login" />} />
-      <Route path="/desplazamiento" element={user ? <Desplazamiento isAdmin={true} /> : <Navigate to="/login" />} />
-      <Route path="/ceremonia" element={user ? <Ceremonia /> : <Navigate to="/login" />} />
-      <Route path="/registro-acciones" element={user ? <Registro rolUsuario={rolUsuario} /> : <Navigate to="/login" />} />
-      <Route path="/ranking" element={user ? <Ranking /> : <Navigate to="/login" />} />
-      <Route path="/chat" element={user ? <Chat usuario={user?.displayName || "Anónimo"} /> : <Navigate to="/login" />} />
-      <Route path="/miparticipacion/:id" element={user ? <MiParticipacion /> : <Navigate to="/login" />} />
-      <Route path="/checklist" element={user ? <Checklist /> : <Navigate to="/login" />} />
-      <Route path="/usuarios" element={user ? <Usuarios /> : <Navigate to="/login" />} />
-      {/* Ruta de pruebas para desarrollo, solo visible para admin */}
-      <Route path="/pruebas-dev" element={
-        rolUsuario === "admin" ? (
-          <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-            <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>✅ Checklist de pruebas</h2>
-            <ul style={{ lineHeight: "1.8" }}>
-              <li>🟢 Registro de usuario funcional</li>
-              <li>🟢 Login con usuario/contraseña</li>
-              <li>🟢 Login con Google (solo admin)</li>
-              <li>🟢 Acceso restringido a rutas privadas (usuarios, registro, checklist)</li>
-              <li>🟢 Datos guardados correctamente en Firestore</li>
-              <li>🟢 Redirección a / tras login</li>
-              <li>🟢 Logout funcional</li>
-            </ul>
-            <p style={{ marginTop: "2rem", fontStyle: "italic", color: "#888" }}>Esta vista solo está disponible en desarrollo.</p>
-          </div>
-        ) : <Navigate to="/login" />
-      } />
-    </Routes>
-  );
-  // 🚀 Complemento futuro: que el QR generado redirija a /miparticipacion con un parámetro único por invitado
-}
 
 export default AppRoot;

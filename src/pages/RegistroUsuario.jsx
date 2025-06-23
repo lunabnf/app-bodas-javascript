@@ -11,7 +11,6 @@ const RegistroUsuario = () => {
   const [password, setPassword] = useState("");
   const [codigo, setCodigo] = useState("");
   const [error, setError] = useState("");
-  const [registroExitoso, setRegistroExitoso] = useState(false);
 
   const navigate = useNavigate();
 
@@ -53,7 +52,6 @@ const RegistroUsuario = () => {
 
       await setDoc(usuariosRef, { uid: user.uid });
 
-      setRegistroExitoso(true);
       navigate("/home");
       setError("");
     } catch (err) {
@@ -64,41 +62,37 @@ const RegistroUsuario = () => {
   return (
     <div className="registro-usuario">
       <h2>Registro de Usuario</h2>
-      {registroExitoso ? (
-        <p>Registro exitoso. Redirigiendo...</p>
-      ) : (
-        <form onSubmit={handleRegistro}>
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Apellidos"
-            value={apellidos}
-            onChange={(e) => setApellidos(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Código de invitación"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            required
-          />
-          <button type="submit">Registrarse</button>
-        </form>
-      )}
+      <form onSubmit={handleRegistro}>
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Apellidos"
+          value={apellidos}
+          onChange={(e) => setApellidos(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Código de invitación"
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value)}
+          required
+        />
+        <button type="submit">Registrarse</button>
+      </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );

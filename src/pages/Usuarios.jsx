@@ -57,10 +57,13 @@ function Usuarios() {
           </div>
         )}
       </div>
+      <p className="mb-2 text-sm text-gray-700">
+        Total de usuarios registrados: <strong>{usuarios.length}</strong>
+      </p>
       <ul>
         {usuarios.map((usuario) => (
           <li key={usuario.id} className="border-b py-2">
-            {usuario.email} - {usuario.rol}
+            {usuario.nombre ? `${usuario.nombre} (${usuario.email})` : usuario.email} - {usuario.rol}
           </li>
         ))}
       </ul>

@@ -21,18 +21,9 @@ const Login = () => {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        const datosUsuario = docSnap.data();
-        localStorage.setItem('usuarioLogueado', JSON.stringify({
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-          rol: datosUsuario.rol || 'invitado'
-        }));
+        // Ya no usamos localStorage, el AuthProvider gestiona la sesión
       } else {
-        localStorage.setItem('usuarioLogueado', JSON.stringify({
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-          rol: 'invitado'
-        }));
+        // Ya no usamos localStorage, el AuthProvider gestiona la sesión
       }
       navigate('/home');
     } catch {
@@ -72,11 +63,7 @@ const Login = () => {
                 return;
               }
 
-              localStorage.setItem('usuarioLogueado', JSON.stringify({
-                uid: result.user.uid,
-                email: result.user.email,
-                rol: 'admin'
-              }));
+              // Ya no usamos localStorage, el AuthProvider gestiona la sesión
               navigate('/home');
             } catch {
               setError("Error al iniciar sesión con Google.");

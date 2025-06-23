@@ -1,4 +1,4 @@
-import { collection, getFirestore, addDoc, getDoc, doc } from "firebase/firestore";
+import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -20,7 +20,6 @@ function Home() {
     const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
-      navigate("/");
     }
     // Si el usuario quiere cerrar sesión
      
@@ -67,7 +66,7 @@ function Home() {
         codigoAcceso: codigo.trim(),
       };
 
-      await addDoc(collection(db, "usuarios"), nuevoUsuario);
+      await setDoc(doc(db, "usuarios", userCredential.user.uid), nuevoUsuario);
 
       console.log("Usuario registrado:", JSON.stringify(nuevoUsuario, null, 2));
       setUser(nuevoUsuario);
