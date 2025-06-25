@@ -27,7 +27,7 @@ const RegistroUsuario = () => {
         return;
       }
 
-      const codigoCorrecto = docSnap.data().valor;
+      const codigoCorrecto = docSnap.data().codigo;
 
       if (codigo !== codigoCorrecto) {
         setError("Código de invitación incorrecto.");
@@ -52,7 +52,7 @@ const RegistroUsuario = () => {
 
       await setDoc(usuariosRef, { uid: user.uid });
 
-      navigate("/home");
+      navigate("/");
       setError("");
     } catch (err) {
       setError("Error al registrar usuario: " + err.message);

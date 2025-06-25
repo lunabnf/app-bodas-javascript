@@ -2,7 +2,7 @@ import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
 import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getAuth } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 function Home() {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ function Home() {
     }
 
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const nuevoUsuario = {
         nombre,
         email,
@@ -148,6 +148,20 @@ function Home() {
       {user && (
         <div style={{ textAlign: "center", paddingTop: "1rem" }}>
           <p>✅ Ya estás registrado. Si ves esto, es porque tu acceso ha sido reconocido correctamente.</p>
+          <button
+            onClick={cerrarSesion}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              background: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Cerrar sesión
+          </button>
         </div>
       )}
 
@@ -172,24 +186,6 @@ function Home() {
           <div style={{ marginTop: "1.5rem" }}>
             <img src="/images/image.png" alt="Instrucciones PWA" style={{ width: "100%", maxWidth: "300px", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }} />
           </div>
-        </div>
-      )}
-
-      {user && (
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <button
-            onClick={cerrarSesion}
-            style={{
-              padding: "0.5rem 1rem",
-              background: "#dc3545",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}
-          >
-            Cerrar sesión
-          </button>
         </div>
       )}
     </>
