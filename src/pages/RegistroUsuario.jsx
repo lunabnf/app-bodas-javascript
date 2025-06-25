@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { getDoc, doc, setDoc } from "firebase/firestore";
@@ -60,40 +60,69 @@ const RegistroUsuario = () => {
   };
 
   return (
-    <div className="registro-usuario">
-      <h2>Registro de Usuario</h2>
-      <form onSubmit={handleRegistro}>
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Apellidos"
-          value={apellidos}
-          onChange={(e) => setApellidos(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Código de invitación"
-          value={codigo}
-          onChange={(e) => setCodigo(e.target.value)}
-          required
-        />
-        <button type="submit">Registrarse</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-pink-300 flex items-center justify-center px-4 py-12">
+      <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">Registro de Usuario</h2>
+        {/* 
+        <div className="mb-4 text-center">
+          <p className="text-sm">
+            ¿Ya tienes una cuenta?{" "}
+            <Link to="/login" className="text-pink-600 font-semibold hover:underline">
+              Inicia sesión
+            </Link>
+          </p>
+        </div> 
+        */}
+        <form onSubmit={handleRegistro} className="space-y-5">
+          <input
+            type="text"
+            placeholder="Nombre"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <input
+            type="text"
+            placeholder="Apellidos"
+            value={apellidos}
+            onChange={(e) => setApellidos(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <input
+            type="text"
+            placeholder="Código de invitación"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <button
+            type="submit"
+            className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition duration-300 font-semibold"
+          >
+            Registrarse
+          </button>
+          <div className="text-center mt-4">
+            <p className="text-sm">
+              ¿Ya tienes una cuenta?{" "}
+              <Link to="/login" className="text-pink-600 font-semibold hover:underline">
+                Inicia sesión aquí
+              </Link>
+            </p>
+          </div>
+        </form>
+        {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
+      </div>
     </div>
   );
 };

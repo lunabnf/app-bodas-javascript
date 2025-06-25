@@ -53,6 +53,8 @@ function AppRoot() {
           <Router>
             {isLoading ? null : (
               <>
+                {/* Redirigir a /login si no hay usuario autenticado */}
+                {!user && <Navigate to="/login" />}
                 {user && window.location.pathname !== "/login" && window.location.pathname !== "/registro-usuarios" && (
                   <>
                     <header className="app-header">
@@ -341,8 +343,8 @@ function AppRoot() {
                         </div>
                       </div>
                     )}
-                    {/* Botón flotante fijo para Home (solo admin) en la esquina derecha */}
-                    {rolUsuario === "admin" && (
+                    {/* Botón flotante fijo para Home disponible para cualquier usuario autenticado */}
+                    {user && (
                       <div
                         style={{
                           position: "fixed",
@@ -376,8 +378,8 @@ function AppRoot() {
                 )}
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/registro-usuarios" element={<RegistroUsuario />} />
+                  <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/programa" element={<Programa />} />
                   <Route path="/info" element={<Info />} />
                   <Route path="/confirmar" element={<Confirmar />} />
