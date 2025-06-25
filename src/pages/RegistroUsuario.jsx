@@ -48,6 +48,7 @@ const RegistroUsuario = () => {
         apellidos,
         email: emailSimulado,
         rol: "invitado",
+        fechaRegistro: new Date()
       });
 
       await setDoc(usuariosRef, { uid: user.uid });

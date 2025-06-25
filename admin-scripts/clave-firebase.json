@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "app-boda-eric-leticia",
+  "private_key_id": "feaf5247e8b9b81060678852bab04474043cfd9f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCW0Z2jE54Tar8b\nvc3RDK0EmduhR2aUbQ1OStaJ2gmK1R0iIYkhX2dlX0LHhvy/oY1L9Wx/LcXVuJHO\nAOyl5wN2olulBvVF/sFRrN4AAn9VLF9JTU/kvyNVEkj+fLmHs4qNeHiCrrI5BbcE\nxCn5Hy/Uz0Paxe+t//M3e86z1B1iWma1eey2fh/6AK2A6fnJ0OiIxHK/Efq4GR4o\n/c69g4Y9MsKEfcjIiIJXF+Tr6bILRlf04JHOoG+qfQrqL6HvgjEnp/yI47OJ88CR\n7eDsIWMg7/FfbzSUBaxS2jOFHZg0UaeXyOIUjl6VhDD8sAxlHeO9ESk/wArpU1QE\nJRmaNQQVAgMBAAECggEAEdBumz2M9WQtcJxpvCCQKzP1MkaZwjxjTvUeBChh6ikk\nCM0HQo7fSqUG4UR7hDMT2n4Bs7/3Vzg22KtZSHtR+GhTBNoejIb71KbjjgK9gZT9\nKE5eenltNfYz8wNOcs3tNqqdKWpzGLMpHAIDpy5c2vkkXan1lord8pbIIouScPRo\nKMeeRsb24IF7HBYWPkT9EKlezaB9EU3ON6oy6xF6HzgYrJVhj96+wJNyfC0dAqXf\nlzHmkXymVPAZpW/xJJFHy71rPfBC9ODVsAmnfbUKY8v6TtoF0zi32aISAZKQ+5qJ\nBn7WdZj+4HlJjNLdoWJYnk/+ALqrKoUMqLZMTtAw4QKBgQDNQc0RGDrAAl5RUp37\nY8pr0TRQhikW4FZwpGc5zVyUsbM3Ha3ioOUsYscP0mu0+ing6AE/2CqwpU+5BAPy\n+eESRe5Nxu14HBXjfHxJHPb5erhl1jviIKc+qKCGasqPVsrrojc0rdD3cMQ6uUvS\nb5Ol/abwKB0SAaUpKAL76RgnSQKBgQC8Go6hIt5a/b2Oj9DT5BVCOgMr0Blht3Rh\n3qivazph/sZ8EUGoRXUmBjvDrw0LyorQXzO5bZLBUNQTcaSreGB0mahBSC3T0GyT\n74iPQ9q+BJanH10I7S7nSYeA3bhPy9l0yki5lwqCDCxEgThLJcp23z3l3NkL2Se6\nsS0HVRf6bQKBgQCuf5Z7RgIMYvcUZAxzQC9C4iR7oNMl46sZMGuhtHlU4I3f+Zdu\n6CJtTby2MsnmnhckYZlOUdRZQPE59bP1yYITKuihrtEMH7RsJdTzw3AkQLSrvypB\n4EjO+EUggYGbwsnY8ZvFaVASTQhGdGmFid4YbECUQ0YTnNpw1tdSmqQyIQKBgG/q\nHRIh/MmGTlGTn1tySHOusFRQ68kHrWbNYu97jLDhNJZ8beP/70NAUi6K5+gsCYsQ\nGWYpmzcJMCShaKfcZwb4pPKyTxHG39LkoQscA/kqIbgtIN0+wLk7NjOltxNC5Y5n\nC/3fr5DQTUY025laUquHBvzL+RbjjI+2+mNybWHBAoGBAL2w5A34lnSbDDfjdMQS\np8kmHvKPfySD/cSTn/Xm5my0nbT2n8FeMghI0chxUmsaImRGgmRbQUUa2n8QJlvH\neua9lgSci9oZSVZj7IgwPRfp+6/favFYRiGMFZFGrIT5eaQdjXJLv7Y1D3eMPvfI\nCoq1yj4ro2I14Sbk+O2Qi41t\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@app-boda-eric-leticia.iam.gserviceaccount.com",
+  "client_id": "117268771002075836447",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40app-boda-eric-leticia.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

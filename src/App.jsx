@@ -379,7 +379,6 @@ function AppRoot() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/registro-usuarios" element={<RegistroUsuario />} />
-                  <Route path="/registro" element={<RegistroUsuario />} />
                   <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/programa" element={<Programa />} />
                   <Route path="/info" element={<Info />} />
