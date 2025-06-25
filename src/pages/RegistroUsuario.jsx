@@ -63,16 +63,17 @@ const RegistroUsuario = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-pink-300 flex items-center justify-center px-4 py-12">
       <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">Registro de Usuario</h2>
-        {/* 
-        <div className="mb-4 text-center">
+        <div className="text-center mb-4">
           <p className="text-sm">
             ¿Ya tienes una cuenta?{" "}
-            <Link to="/login" className="text-pink-600 font-semibold hover:underline">
-              Inicia sesión
+            <Link
+              to="/login"
+              className="inline-block mt-2 bg-pink-100 text-pink-700 px-4 py-2 rounded-lg font-semibold hover:bg-pink-200 transition"
+            >
+              Inicia sesión aquí
             </Link>
           </p>
-        </div> 
-        */}
+        </div>
         <form onSubmit={handleRegistro} className="space-y-5">
           <input
             type="text"
@@ -112,14 +113,6 @@ const RegistroUsuario = () => {
           >
             Registrarse
           </button>
-          <div className="text-center mt-4">
-            <p className="text-sm">
-              ¿Ya tienes una cuenta?{" "}
-              <Link to="/login" className="text-pink-600 font-semibold hover:underline">
-                Inicia sesión aquí
-              </Link>
-            </p>
-          </div>
         </form>
         {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
       </div>
