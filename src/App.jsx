@@ -1,4 +1,3 @@
-import AppRoutes from './routes/AppRoutes';
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
@@ -376,15 +375,27 @@ function AppRoot() {
                   </>
                 )}
                 <Routes>
-                  <Route path="/" element={<Navigate to={user ? "/programa" : "/registro-usuarios"} replace />} />
+                  <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/registro-usuarios" element={<RegistroUsuario />} />
-                  {user && (
-                    <Route path="*" element={<AppRoutes user={user} rolUsuario={rolUsuario} />} />
-                  )}
-                  {!user && (
-                    <Route path="*" element={<Navigate to="/registro-usuarios" replace />} />
-                  )}
+                  <Route path="/programa" element={<Programa />} />
+                  <Route path="/info" element={<Info />} />
+                  <Route path="/confirmar" element={<Confirmar />} />
+                  <Route path="/mesas" element={<Mesas />} />
+                  <Route path="/ceremonia" element={<Ceremonia />} />
+                  <Route path="/cuenta-atras" element={<CuentaAtras />} />
+                  <Route path="/musica" element={<Musica />} />
+                  <Route path="/invitacion" element={<Invitacion />} />
+                  <Route path="/desplazamiento" element={<Desplazamiento />} />
+                  <Route path="/ranking" element={<Ranking />} />
+                  <Route path="/muro" element={<MuroDeFotos />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/cuestionario" element={<Cuestionario />} />
+                  <Route path="/registro-acciones" element={<Registro />} />
+                  <Route path="/usuarios" element={<Usuarios />} />
+                  <Route path="/checklist" element={<Checklist />} />
+                  <Route path="/miparticipacion/:id" element={<MiParticipacion />} />
+                  <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </>
             )}

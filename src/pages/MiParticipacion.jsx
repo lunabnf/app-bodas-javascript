@@ -166,6 +166,9 @@ export default function MiParticipacion() {
         </div>
       </div>
       <div className="card">
+        <div style={{ fontSize: "1.2rem", marginBottom: "0.5rem", fontWeight: "bold", color: "#5C5470" }}>
+          Usuario conectado: {participacion.nombre}
+        </div>
         <h2>Tu participación en la boda</h2>
         <div className="participacion-info">
           <div className="info-box"><strong>Nombre:</strong> {participacion.nombre}</div>

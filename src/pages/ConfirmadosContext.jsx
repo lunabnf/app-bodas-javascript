@@ -1,12 +1,8 @@
-
-
-import { createContext, useContext, useState, useEffect } from "react";
-import { db } from "../firebase"; // Ajusta esta ruta si tu archivo firebase está en otra ubicación
+import { createContext, useState, useEffect } from "react";
+import { db } from "../firebaseConfig"; // Ajusta esta ruta si tu archivo firebase está en otra ubicación
 import { collection, onSnapshot } from "firebase/firestore";
 
 const ConfirmadosContext = createContext();
-
-export const useConfirmados = () => useContext(ConfirmadosContext);
 
 export const ConfirmadosProvider = ({ children }) => {
   const [invitados, setInvitados] = useState([]);
@@ -41,3 +37,5 @@ export const ConfirmadosProvider = ({ children }) => {
     </ConfirmadosContext.Provider>
   );
 };
+
+export { ConfirmadosContext };
