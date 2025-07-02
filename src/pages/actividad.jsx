@@ -350,8 +350,6 @@ function Registro({ user }) {
   // Gráfica de confirmación: datos reales de Firebase
   const [datosConfirmacion, setDatosConfirmacion] = useState(null);
 
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-
   // useEffect para cargar confirmaciones, fuera de cualquier condicional
   useEffect(() => {
     const cargarConfirmacion = async () => {
@@ -376,6 +374,8 @@ function Registro({ user }) {
     };
     cargarConfirmacion();
   }, []);
+
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   if (!Object.keys(accionesPorTipo).length) {
     return (

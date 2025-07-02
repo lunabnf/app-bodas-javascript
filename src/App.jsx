@@ -13,13 +13,12 @@ import Cuestionario from "./pages/Cuestionario";
 import Invitacion from './pages/invitacion';
 import Desplazamiento from './pages/Desplazamiento';
 import Ceremonia from './pages/Ceremonia';
-import Registro from './pages/actividad';
+import Actividad from './pages/actividad';
 import Ranking from './pages/ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 import Checklist from './pages/Checklist';
 import Usuarios from './pages/Usuarios';
-import RegistroUsuario from './pages/RegistroUsuario';
 
 import './App.css';
 import { useAuth } from './AuthProvider';
@@ -378,7 +377,6 @@ function AppRoot() {
                 )}
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/registro-usuarios" element={<RegistroUsuario />} />
                   <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/programa" element={<Programa />} />
                   <Route path="/info" element={<Info />} />
@@ -393,7 +391,7 @@ function AppRoot() {
                   <Route path="/muro" element={<MuroDeFotos />} />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/cuestionario" element={<Cuestionario />} />
-                  <Route path="/registro-acciones" element={<Registro />} />
+                  <Route path="/registro-acciones" element={<Actividad />} />
                   <Route path="/usuarios" element={<Usuarios />} />
                   <Route path="/checklist" element={<Checklist />} />
                   <Route path="/miparticipacion/:id" element={<MiParticipacion />} />

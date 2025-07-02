@@ -21,7 +21,10 @@ function Usuarios() {
   useEffect(() => {
     const obtenerDatos = async () => {
       const usuariosSnapshot = await getDocs(collection(db, 'usuarios'));
-      const usuariosList = usuariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Ordenar por fecha de registro descendente
+      const usuariosList = usuariosSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => new Date(b.fechaRegistro) - new Date(a.fechaRegistro));
       setUsuarios(usuariosList);
 
       const configRef = doc(db, 'config', 'codigoInvitacion');
