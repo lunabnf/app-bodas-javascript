@@ -13,7 +13,7 @@ import Cuestionario from "./pages/Cuestionario";
 import Invitacion from './pages/invitacion';
 import Desplazamiento from './pages/desplazamiento';
 import Ceremonia from './pages/Ceremonia';
-import Actividad from './pages/Actividad';
+import Actividad from './pages/actividad';
 import Ranking from './pages/Ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
