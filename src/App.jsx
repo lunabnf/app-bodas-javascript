@@ -10,8 +10,8 @@ import CuentaAtras from './pages/CuentaAtras';
 import MuroDeFotos from "./pages/MuroDeFotos";
 import Musica from './pages/Musica';
 import Cuestionario from "./pages/Cuestionario";
-import Invitacion from './pages/Invitacion';
-import Desplazamiento from './pages/Desplazamiento';
+import Invitacion from './pages/invitacion';
+import Desplazamiento from './pages/desplazamiento';
 import Ceremonia from './pages/Ceremonia';
 import Actividad from './pages/Actividad';
 import Ranking from './pages/Ranking';
@@ -146,8 +146,8 @@ function AppRoot() {
                                 <div className="flex flex-col gap-4">
                                   <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">Cuenta Atrás</Link>
                                   <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">Música</Link>
-                                  <Link to="/Invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
-                                  <Link to="/Desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
+                                  <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
+                                  <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
                                 </div>
                               )}
                               {menuSection === "modoPro" && (
