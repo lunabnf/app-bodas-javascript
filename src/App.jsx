@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Programa from './pages/Programa';
-import Mesas from './pages/Mesas';
-import Info from './pages/Info';
-import Confirmar from './pages/Confirmar';
-import CuentaAtras from './pages/CuentaAtras';
-import MuroDeFotos from "./pages/MuroDeFotos";
-import Musica from './pages/Musica';
-import Cuestionario from "./pages/Cuestionario";
+import Home from './pages/home';
+import Login from './pages/login';
+import Programa from './pages/programa';
+import Mesas from './pages/mesas';
+import Info from './pages/info';
+import Confirmar from './pages/confirmar';
+import CuentaAtras from './pages/cuentaatras';
+import MuroDeFotos from './pages/murodefotos';
+import Musica from './pages/musica';
+import Cuestionario from './pages/cuestionario';
 import Invitacion from './pages/invitacion';
 import Desplazamiento from './pages/desplazamiento';
-import Ceremonia from './pages/Ceremonia';
+import Ceremonia from './pages/ceremonia';
 import Actividad from './pages/actividad';
-import Ranking from './pages/Ranking';
-import Chat from './pages/Chat';
-import MiParticipacion from './pages/MiParticipacion';
-import Checklist from './pages/Checklist';
-import Usuarios from './pages/Usuarios';
+import Ranking from './pages/ranking';
+import Chat from './pages/chat';
+import MiParticipacion from './pages/miparticipacion';
+import Checklist from './pages/checklist';
+import Usuarios from './pages/usuarios';
 
 import './App.css';
 import { useAuth } from './AuthProvider';
@@ -152,10 +152,10 @@ function AppRoot() {
                               )}
                               {menuSection === "modoPro" && (
                                 <div className="flex flex-col gap-4">
-                                  <Link to="/Ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
-                                  <Link to="/Muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
-                                  <Link to="/Chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
-                                  <Link to="/Cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
+                                  <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
+                                  <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
+                                  <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
+                                  <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
                                 </div>
                               )}
                             </div>
