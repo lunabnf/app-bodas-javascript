@@ -10,11 +10,11 @@ import CuentaAtras from './pages/CuentaAtras';
 import MuroDeFotos from "./pages/MuroDeFotos";
 import Musica from './pages/Musica';
 import Cuestionario from "./pages/Cuestionario";
-import Invitacion from './pages/invitacion';
+import Invitacion from './pages/Invitacion';
 import Desplazamiento from './pages/Desplazamiento';
 import Ceremonia from './pages/Ceremonia';
-import Actividad from './pages/actividad';
-import Ranking from './pages/ranking';
+import Actividad from './pages/Actividad';
+import Ranking from './pages/Ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 import Checklist from './pages/Checklist';
@@ -32,12 +32,6 @@ function AppRoot() {
   const rolUsuario = user && listaAdmins.includes(user.email) ? "admin" : "invitado";
   const nombreBoda = "Boda E&L";
 
-
-
-
-
-
-  // Mostrar mensaje de carga mientras isLoading sea verdadero
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', marginTop: '3rem', fontFamily: 'Playfair Display, serif', color: '#5C5470' }}>
@@ -45,6 +39,7 @@ function AppRoot() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
       <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
@@ -52,14 +47,11 @@ function AppRoot() {
           <Router>
             {isLoading ? null : (
               <>
-                {/* Redirigir a /login si no hay usuario autenticado */}
                 {!user && <Navigate to="/login" />}
                 {user && window.location.pathname !== "/login" && window.location.pathname !== "/registro-usuarios" && (
                   <>
                     <header className="app-header">
-                      {/* Aquí mantener el código del header y menú */}
                       <h1 className="titulo-app">{nombreBoda}</h1>
-                      {/* Botón flotante fijo para abrir menú principal */}
                       <div
                         style={{
                           position: "fixed",
@@ -154,16 +146,16 @@ function AppRoot() {
                                 <div className="flex flex-col gap-4">
                                   <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">Cuenta Atrás</Link>
                                   <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">Música</Link>
-                                  <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
-                                  <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
+                                  <Link to="/Invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
+                                  <Link to="/Desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
                                 </div>
                               )}
                               {menuSection === "modoPro" && (
                                 <div className="flex flex-col gap-4">
-                                  <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
-                                  <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
-                                  <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
-                                  <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
+                                  <Link to="/Ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
+                                  <Link to="/Muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
+                                  <Link to="/Chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
+                                  <Link to="/Cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
                                 </div>
                               )}
                             </div>
@@ -171,8 +163,6 @@ function AppRoot() {
                         </div>
                       )}
                     </header>
-                    {/* Iconos flotantes de usuario y admin */}
-                    {/* Icono de participación del usuario */}
                     <div
                       style={{
                         position: "fixed",
@@ -245,7 +235,6 @@ function AppRoot() {
                         )}
                       </div>
                     </div>
-                    {/* Botón flotante fijo para Organización (solo admin) con menú desplegable al pasar el ratón */}
                     {rolUsuario === "admin" && (
                       <div
                         style={{
@@ -264,7 +253,7 @@ function AppRoot() {
                           if (!isTouchDevice) {
                             window.adminPanelTimeout = setTimeout(() => {
                               setMenuSection(null);
-                            }, 500); // Espera de 500 ms antes de cerrar
+                            }, 500); 
                           }
                         }}
                       >
@@ -342,7 +331,6 @@ function AppRoot() {
                         </div>
                       </div>
                     )}
-                    {/* Botón flotante fijo para Home disponible para cualquier usuario autenticado */}
                     {user && (
                       <div
                         style={{
@@ -405,7 +393,5 @@ function AppRoot() {
     </div>
   );
 }
-
-
 
 export default AppRoot;
