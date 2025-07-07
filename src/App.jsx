@@ -10,9 +10,10 @@ import CuentaAtras from './pages/CuentaAtras';
 import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
 // import Cuestionario from './pages/Cuestionario'; // Eliminado porque borrado
-import Desplazamiento from './pages/Desplazamiento';
+// import Invitacion from './pages/Invitacion'; // Eliminado porque borrado
+import Desplazamiento from './pages/Desplazamiento';  // Corregido a mayúscula
 import Ceremonia from './pages/Ceremonia';
-import Actividad from './pages/Actividad';
+// import Actividad from './pages/Actividad'; // Eliminado porque borrado
 import Ranking from './pages/Ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
@@ -322,9 +323,10 @@ function AppRoot() {
                           <Link to="/usuarios" className="submenu-link">
                             Gestión de usuarios
                           </Link>
-                          <Link to="/checklist" className="submenu-link">
+                          {/* Checklist eliminado porque borrado */}
+                          {/* <Link to="/checklist" className="submenu-link">
                             Panel de administración
-                          </Link>
+                          </Link> */}
                         </div>
                       )}
                     </div>
@@ -393,3 +395,9 @@ function AppRoot() {
 }
 
 export default AppRoot;
+
+// NOTA: Importaciones eliminadas de componentes borrados:
+// - Cuestionario: import Cuestionario from './pages/Cuestionario';
+// - Invitacion: import Invitacion from './pages/Invitacion';
+// - Actividad: import Actividad from './pages/Actividad';
+// - Checklist: import Checklist from './pages/Checklist';
