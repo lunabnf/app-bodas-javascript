@@ -10,11 +10,11 @@ import CuentaAtras from './pages/CuentaAtras';
 import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
 // import Cuestionario from './pages/Cuestionario'; // Eliminado porque borrado
-import Invitacion from './pages/invitacion';
-import Desplazamiento from './pages/desplazamiento';
+import Invitacion from './pages/Invitacion';
+import Desplazamiento from './pages/Desplazamiento';
 import Ceremonia from './pages/Ceremonia';
-import Actividad from './pages/actividad';
-import Ranking from './pages/ranking';
+import Actividad from './pages/Actividad';
+import Ranking from './pages/Ranking';
 import Chat from './pages/Chat';
 import MiParticipacion from './pages/MiParticipacion';
 // import Checklist from './pages/Checklist'; // Eliminado porque borrado
