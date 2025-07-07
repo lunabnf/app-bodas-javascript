@@ -10,7 +10,6 @@ import CuentaAtras from './pages/CuentaAtras';
 import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
 // import Cuestionario from './pages/Cuestionario'; // Eliminado porque borrado
-import Invitacion from './pages/Invitacion';
 import Desplazamiento from './pages/Desplazamiento';
 import Ceremonia from './pages/Ceremonia';
 import Actividad from './pages/Actividad';
@@ -144,7 +143,7 @@ function AppRoot() {
                             <div className="flex flex-col gap-4">
                               <Link to="/cuenta-atras" onClick={() => setMenuOpen(false)} className="submenu-link">Cuenta Atrás</Link>
                               <Link to="/musica" onClick={() => setMenuOpen(false)} className="submenu-link">Música</Link>
-                              <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link>
+                              {/* <Link to="/invitacion" onClick={() => setMenuOpen(false)} className="submenu-link">Invitación</Link> */}
                               <Link to="/desplazamiento" onClick={() => setMenuOpen(false)} className="submenu-link">Desplazamiento</Link>
                             </div>
                           )}
@@ -373,7 +372,7 @@ function AppRoot() {
               <Route path="/ceremonia" element={<Ceremonia />} />
               <Route path="/cuenta-atras" element={<CuentaAtras />} />
               <Route path="/musica" element={<Musica />} />
-              <Route path="/invitacion" element={<Invitacion />} />
+              {/* <Route path="/invitacion" element={<Invitacion />} /> */}
               <Route path="/desplazamiento" element={<Desplazamiento />} />
               <Route path="/ranking" element={<Ranking />} />
               <Route path="/muro" element={<MuroDeFotos />} />
