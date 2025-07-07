@@ -5,6 +5,7 @@ import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "fireba
 const categorias = [
   "👑 Invitado/a más guapo/a",
   "🎮 Invitado/a más jugón o jugona",
+  "🌟 Invitado/a más original",  // Nueva categoría añadida
   "🕺 Mejor outfit masculino",
   "💃 Mejor outfit femenino",
   "🤣 El alma de la fiesta",
