@@ -11,7 +11,7 @@ import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
 // import Cuestionario from './pages/Cuestionario'; // Eliminado porque borrado
 // import Invitacion from './pages/Invitacion'; // Eliminado porque borrado
-import Desplazamiento from './pages/Desplazamiento';  // Corregido a mayúscula
+import desplazamiento from './pages/desplazamiento';  // Corregido a mayúscula
 import Ceremonia from './pages/Ceremonia';
 // import Actividad from './pages/Actividad'; // Eliminado porque borrado
 import Ranking from './pages/Ranking';
