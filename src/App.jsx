@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import AdminPanel from './pages/AdminPanel';
 import Ceremonia from './pages/Ceremonia';
 import Chat from './pages/Chat';
-import ConfirmadosContext from './pages/ConfirmadosContext';
+import { ConfirmadosContext } from './pages/ConfirmadosContext';
 import Confirmar from './pages/Confirmar';
 import CuentaAtras from './pages/CuentaAtras';
-import desplazamiento from './pages/desplazamiento';
+import Desplazamiento from './pages/desplazamiento';
 import Error404 from './pages/Error404';
 import Home from './pages/Home';
 import Info from './pages/Info';
@@ -17,7 +17,7 @@ import MiParticipacion from './pages/MiParticipacion';
 import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
 import Programa from './pages/Programa';
-import ranking from './pages/ranking';
+import Ranking from './pages/ranking';
 import RegistroUsuario from './pages/RegistroUsuario';
 import RutaPrivada from './pages/RutaPrivada';
 import Usuarios from './pages/Usuarios';
@@ -32,7 +32,7 @@ function AppRoot() {
   const { user, loading: isLoading } = useAuth();
   const listaAdmins = ["luislunaraluy98@gmail.com", "otroadmin@gmail.com"];
   const rolUsuario = user && listaAdmins.includes(user.email) ? "admin" : "invitado";
-  const nombreBoda = "Boda E&L";
+  const nombreBoda = "Boda Amigos";
 
   if (isLoading) {
     return (
@@ -377,8 +377,8 @@ function AppRoot() {
               <Route path="/cuenta-atras" element={<CuentaAtras />} />
               <Route path="/musica" element={<Musica />} />
               {/* <Route path="/invitacion" element={<Invitacion />} /> */}
-              <Route path="/desplazamiento" element={<desplazamiento />} />
-              <Route path="/ranking" element={<ranking />} />
+              <Route path="/desplazamiento" element={<Desplazamiento />} />
+              <Route path="/ranking" element={<Ranking />} />
               <Route path="/muro" element={<MuroDeFotos />} />
               <Route path="/chat" element={<Chat />} />
               {/* Cuestionario eliminado porque borrado */}

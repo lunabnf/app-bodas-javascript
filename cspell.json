@@ -1,0 +1,10 @@
+{
+  "language": "es",
+  "dictionaries": ["es"],
+  "dictionaryDefinitions": [
+    {
+      "name": "es",
+      "path": "./spanish.dic"
+    }
+  ]
+}
