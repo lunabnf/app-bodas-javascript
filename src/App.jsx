@@ -1,23 +1,25 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Programa from './pages/Programa';
-import Mesas from './pages/Mesas';
-import Info from './pages/Info';
+import AdminPanel from './pages/AdminPanel';
+import Ceremonia from './pages/Ceremonia';
+import Chat from './pages/Chat';
+import ConfirmadosContext from './pages/ConfirmadosContext';
 import Confirmar from './pages/Confirmar';
 import CuentaAtras from './pages/CuentaAtras';
+import desplazamiento from './pages/desplazamiento';
+import Error404 from './pages/Error404';
+import Home from './pages/Home';
+import Info from './pages/Info';
+import InvitadoPanel from './pages/InvitadoPanel';
+import Login from './pages/Login';
+import Mesas from './pages/Mesas';
+import MiParticipacion from './pages/MiParticipacion';
 import MuroDeFotos from './pages/MuroDeFotos';
 import Musica from './pages/Musica';
-// import Cuestionario from './pages/Cuestionario'; // Eliminado porque borrado
-// import Invitacion from './pages/Invitacion'; // Eliminado porque borrado
-import desplazamiento from './pages/desplazamiento';  // Corregido a mayúscula
-import Ceremonia from './pages/Ceremonia';
-// import Actividad from './pages/Actividad'; // Eliminado porque borrado
-import Ranking from './pages/Ranking';
-import Chat from './pages/Chat';
-import MiParticipacion from './pages/MiParticipacion';
-// import Checklist from './pages/Checklist'; // Eliminado porque borrado
+import Programa from './pages/Programa';
+import ranking from './pages/ranking';
+import RegistroUsuario from './pages/RegistroUsuario';
+import RutaPrivada from './pages/RutaPrivada';
 import Usuarios from './pages/Usuarios';
 
 import './App.css';
@@ -375,8 +377,8 @@ function AppRoot() {
               <Route path="/cuenta-atras" element={<CuentaAtras />} />
               <Route path="/musica" element={<Musica />} />
               {/* <Route path="/invitacion" element={<Invitacion />} /> */}
-              <Route path="/desplazamiento" element={<Desplazamiento />} />
-              <Route path="/ranking" element={<Ranking />} />
+              <Route path="/desplazamiento" element={<desplazamiento />} />
+              <Route path="/ranking" element={<ranking />} />
               <Route path="/muro" element={<MuroDeFotos />} />
               <Route path="/chat" element={<Chat />} />
               {/* Cuestionario eliminado porque borrado */}
