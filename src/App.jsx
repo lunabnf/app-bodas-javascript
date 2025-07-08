@@ -43,13 +43,14 @@ function AppRoot() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
+    <>
       <div style={{ textAlign: 'center', fontWeight: 'bold', color: 'green', marginTop: '1rem' }}>
         ✅ Versión desplegada automáticamente el {new Date().toLocaleString('es-ES')}
       </div>
-      <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
-        <div className="overflow-x-hidden w-full">
-          <Router>
+      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
+        <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
+          <div className="overflow-x-hidden w-full">
+            <Router>
             {!user && <Navigate to="/login" />}
             {user && window.location.pathname !== "/login" && window.location.pathname !== "/registro-usuarios" && (
               <>
@@ -392,10 +393,11 @@ function AppRoot() {
               <Route path="/registro-usuarios" element={<Login rolUsuario={rolUsuario} />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-          </Router>
+            </Router>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
