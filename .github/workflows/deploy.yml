@@ -27,7 +27,7 @@ jobs:
       - name: Insertar marca de despliegue automática en index.html
         run: |
           DATE=$(date "+%d/%m/%Y a las %H:%M")
-          sed -i "s|<body>|<body><div style='text-align:center; font-weight:bold; color:green; margin-top:1rem;'>✅ Versión desplegada automáticamente el $DATE</div>|" dist/index.html
+          sed -i.bak "s|<body>|<body><div style='text-align:center; font-weight:bold; color:green; margin-top:1rem;'>✅ Versión desplegada automáticamente el $DATE</div>|" dist/index.html && rm dist/index.html.bak
 
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.1.0
