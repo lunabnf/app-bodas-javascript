@@ -24,6 +24,12 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Insertar marca de despliegue automática en index.html
+        run: |
+          DATE=$(date "+%d/%m/%Y a las %H:%M")
+          echo "Insertando mensaje de despliegue en dist/index.html"
+          sed -i "s|<body>|<body><div style='text-align:center; font-weight:bold; color:green; margin-top:1rem;'>✅ Versión desplegada automáticamente el $DATE</div>|" dist/index.html
+
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.1.0
         with:
