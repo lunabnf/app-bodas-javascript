@@ -28,7 +28,11 @@ jobs:
         run: |
           DATE=$(date "+%d/%m/%Y a las %H:%M")
           echo "Insertando mensaje de despliegue en dist/index.html"
-          sed -i "s|<body>|<body><div style='text-align:center; font-weight:bold; color:green; margin-top:1rem;'>✅ Versión desplegada automáticamente el $DATE</div>|" dist/index.html
+          awk -v date="$DATE" '/<body>/ {
+            print;
+            print "<div style=\"text-align:center; font-weight:bold; color:green; margin-top:1rem;\">✅ Versión desplegada automáticamente el " date "</div>";
+            next
+          } 1' dist/index.html > dist/index_tmp.html && mv dist/index_tmp.html dist/index.html
 
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.1.0
