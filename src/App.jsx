@@ -21,6 +21,7 @@ import Ranking from './pages/ranking';
 import RegistroUsuario from './pages/RegistroUsuario';
 import RutaPrivada from './pages/RutaPrivada';
 import Usuarios from './pages/Usuarios';
+import Cuestionario from './pages/Cuestionario';
 
 import './App.css';
 import { useAuth } from './AuthProvider';
@@ -32,7 +33,8 @@ function AppRoot() {
   const { user, loading: isLoading } = useAuth();
   const listaAdmins = ["luislunaraluy98@gmail.com", "otroadmin@gmail.com"];
   const rolUsuario = user && listaAdmins.includes(user.email) ? "admin" : "invitado";
-  const nombreBoda = "Boda Amigos";
+  const [nombreBoda, setNombreBoda] = useState(localStorage.getItem('nombreBoda') || "Boda Amigos");
+  const esAdmin = rolUsuario === "admin";
 
   if (isLoading) {
     return (
@@ -44,9 +46,31 @@ function AppRoot() {
 
   return (
     <>
-      <div style={{ textAlign: 'center', fontWeight: 'bold', color: 'green', marginTop: '1rem' }}>
-        ✅ Versión desplegada automáticamente el {new Date().toLocaleString('es-ES')}
-      </div>
+      {esAdmin && (
+        <div style={{ margin: '1rem auto', textAlign: 'center' }}>
+          <input
+            type="text"
+            value={nombreBoda}
+            onChange={(e) => {
+              const nuevoNombre = e.target.value;
+              setNombreBoda(nuevoNombre);
+              localStorage.setItem('nombreBoda', nuevoNombre);
+            }}
+            placeholder="Título de la boda"
+            style={{
+              padding: '0.5rem',
+              borderRadius: '1rem',
+              border: '1px solid #ccc',
+              fontSize: '1rem',
+              textAlign: 'center',
+              fontWeight: 'bold'
+            }}
+          />
+          <p style={{ marginTop: '0.5rem', color: '#666', fontSize: '0.9rem' }}>
+            Aquí puedes escribir el título del evento. Será visible como nombre principal en la aplicación.
+          </p>
+        </div>
+      )}
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10">
         <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
           <div className="overflow-x-hidden w-full">
@@ -159,8 +183,7 @@ function AppRoot() {
                               <Link to="/ranking" onClick={() => setMenuOpen(false)} className="submenu-link">Ranking de Invitados</Link>
                               <Link to="/muro" onClick={() => setMenuOpen(false)} className="submenu-link">Muro de Fotos</Link>
                               <Link to="/chat" onClick={() => setMenuOpen(false)} className="submenu-link">Chat entre Invitados</Link>
-                              {/* Cuestionario eliminado porque borrado */}
-                              {/* <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link> */}
+                              <Link to="/cuestionario" onClick={() => setMenuOpen(false)} className="submenu-link">Cuestionario</Link>
                             </div>
                           )}
                         </div>
@@ -385,8 +408,7 @@ function AppRoot() {
               <Route path="/ranking" element={<Ranking />} />
               <Route path="/muro" element={<MuroDeFotos />} />
               <Route path="/chat" element={<Chat />} />
-              {/* Cuestionario eliminado porque borrado */}
-              {/* <Route path="/cuestionario" element={<Cuestionario />} /> */}
+              <Route path="/cuestionario" element={<Cuestionario />} />
               <Route path="/registro-acciones" element={<Usuarios />} />
               <Route path="/usuarios" element={<Usuarios />} />
               <Route path="/miparticipacion/:uid" element={<MiParticipacion />} />
