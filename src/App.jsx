@@ -114,7 +114,7 @@ function AppRoot() {
                         padding: "0.5rem 1rem",
                         boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
                         fontWeight: "bold",
-                        color: "#007bff",
+                        color: "red",
                         border: "none",
                       }}
                     >
