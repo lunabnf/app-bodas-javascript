@@ -75,8 +75,38 @@ function AppRoot() {
         <div className="bg-white shadow-lg rounded-3xl p-6 w-full max-w-4xl">
           <div className="overflow-x-hidden w-full">
             <Router>
-            {!user && <Navigate to="/login" />}
-            {user && window.location.pathname !== "/login" && window.location.pathname !== "/registro-usuarios" && (
+            <Routes>
+              {!user && (
+                <>
+                  <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
+                  <Route path="/registro-usuarios" element={<RegistroUsuario />} />
+                  <Route path="*" element={<Navigate to="/login" />} />
+                </>
+              )}
+              {user && (
+                <>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/programa" element={<Programa />} />
+                  <Route path="/info" element={<Info />} />
+                  <Route path="/confirmar" element={<Confirmar />} />
+                  <Route path="/mesas" element={<Mesas />} />
+                  <Route path="/ceremonia" element={<Ceremonia />} />
+                  <Route path="/cuenta-atras" element={<CuentaAtras />} />
+                  <Route path="/musica" element={<Musica />} />
+                  <Route path="/desplazamiento" element={<Desplazamiento />} />
+                  <Route path="/ranking" element={<Ranking />} />
+                  <Route path="/muro" element={<MuroDeFotos />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/cuestionario" element={<Cuestionario />} />
+                  <Route path="/registro-acciones" element={<Usuarios />} />
+                  <Route path="/usuarios" element={<Usuarios />} />
+                  <Route path="/miparticipacion/:uid" element={<MiParticipacion />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </>
+              )}
+            </Routes>
+            {/* El contenido visual (header, menú, etc) puede ir aquí si lo deseas mostrar solo cuando el usuario esté autenticado */}
+            {user && (
               <>
                 <header className="app-header">
                   <h1 className="titulo-app">{nombreBoda}</h1>
@@ -393,28 +423,7 @@ function AppRoot() {
                 )}
               </>
             )}
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
-              <Route path="/programa" element={<Programa />} />
-              <Route path="/info" element={<Info />} />
-              <Route path="/confirmar" element={<Confirmar />} />
-              <Route path="/mesas" element={<Mesas />} />
-              <Route path="/ceremonia" element={<Ceremonia />} />
-              <Route path="/cuenta-atras" element={<CuentaAtras />} />
-              <Route path="/musica" element={<Musica />} />
-              {/* <Route path="/invitacion" element={<Invitacion />} /> */}
-              <Route path="/desplazamiento" element={<Desplazamiento />} />
-              <Route path="/ranking" element={<Ranking />} />
-              <Route path="/muro" element={<MuroDeFotos />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/cuestionario" element={<Cuestionario />} />
-              <Route path="/registro-acciones" element={<Usuarios />} />
-              <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/miparticipacion/:uid" element={<MiParticipacion />} />
-              <Route path="/registro-usuarios" element={<Login rolUsuario={rolUsuario} />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            {/* Las rutas ahora están gestionadas arriba con la lógica de autenticación */}
             </Router>
           </div>
         </div>
