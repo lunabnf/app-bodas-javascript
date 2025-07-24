@@ -22,6 +22,7 @@ import RegistroUsuario from './pages/RegistroUsuario';
 import RutaPrivada from './pages/RutaPrivada';
 import Usuarios from './pages/Usuarios';
 import Cuestionario from './pages/Cuestionario';
+import ProtectedRoute from './pages/ProtectedRoute.jsx';
 
 import './App.css';
 import { useAuth } from './AuthProvider';
@@ -78,30 +79,32 @@ function AppRoot() {
             <Routes>
               {!user && (
                 <>
-                  <Route path="/login" element={<Login rolUsuario={rolUsuario} />} />
+                  <Route path="/" element={<Login rolUsuario={rolUsuario} />} />
                   <Route path="/registro-usuarios" element={<RegistroUsuario />} />
-                  <Route path="*" element={<Navigate to="/login" />} />
+                  <Route path="*" element={<Navigate to="/" />} />
                 </>
               )}
               {user && (
                 <>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/programa" element={<Programa />} />
-                  <Route path="/info" element={<Info />} />
-                  <Route path="/confirmar" element={<Confirmar />} />
-                  <Route path="/mesas" element={<Mesas />} />
-                  <Route path="/ceremonia" element={<Ceremonia />} />
-                  <Route path="/cuenta-atras" element={<CuentaAtras />} />
-                  <Route path="/musica" element={<Musica />} />
-                  <Route path="/desplazamiento" element={<Desplazamiento />} />
-                  <Route path="/ranking" element={<Ranking />} />
-                  <Route path="/muro" element={<MuroDeFotos />} />
-                  <Route path="/chat" element={<Chat />} />
-                  <Route path="/cuestionario" element={<Cuestionario />} />
-                  <Route path="/registro-acciones" element={<Usuarios />} />
-                  <Route path="/usuarios" element={<Usuarios />} />
-                  <Route path="/miparticipacion/:uid" element={<MiParticipacion />} />
-                  <Route path="*" element={<Navigate to="/" />} />
+                  <Route path="/" element={<Navigate to="/home" />} />
+                  <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                  <Route path="/programa" element={<ProtectedRoute><Programa /></ProtectedRoute>} />
+                  <Route path="/info" element={<ProtectedRoute><Info /></ProtectedRoute>} />
+                  <Route path="/confirmar" element={<ProtectedRoute><Confirmar /></ProtectedRoute>} />
+                  <Route path="/mesas" element={<ProtectedRoute><Mesas /></ProtectedRoute>} />
+                  <Route path="/ceremonia" element={<ProtectedRoute><Ceremonia /></ProtectedRoute>} />
+                  <Route path="/cuenta-atras" element={<ProtectedRoute><CuentaAtras /></ProtectedRoute>} />
+                  <Route path="/musica" element={<ProtectedRoute><Musica /></ProtectedRoute>} />
+                  <Route path="/desplazamiento" element={<ProtectedRoute><Desplazamiento /></ProtectedRoute>} />
+                  <Route path="/ranking" element={<ProtectedRoute><Ranking /></ProtectedRoute>} />
+                  <Route path="/muro" element={<ProtectedRoute><MuroDeFotos /></ProtectedRoute>} />
+                  <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                  <Route path="/cuestionario" element={<ProtectedRoute><Cuestionario /></ProtectedRoute>} />
+                  <Route path="/registro-acciones" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
+                  <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
+                  <Route path="/admin-panel" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+                  <Route path="/miparticipacion/:uid" element={<ProtectedRoute><MiParticipacion /></ProtectedRoute>} />
+                  <Route path="*" element={<ProtectedRoute><Navigate to="/home" /></ProtectedRoute>} />
                 </>
               )}
             </Routes>
@@ -376,6 +379,9 @@ function AppRoot() {
                             }
                           }}
                         >
+                          <Link to="/admin-panel" className="submenu-link">
+                            Panel principal de administración
+                          </Link>
                           <Link to="/registro-acciones" className="submenu-link">
                             Registro de acciones
                           </Link>
