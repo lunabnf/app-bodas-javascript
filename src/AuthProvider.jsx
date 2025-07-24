@@ -1,3 +1,5 @@
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./firebaseConfig";
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig"; // ajusta ruta si está en otra carpeta
@@ -10,8 +12,22 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+      // Ahora obtenemos el rol también desde Firestore
+      if (currentUser) {
+        const docRef = doc(db, "usuarios", currentUser.uid);
+        getDoc(docRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setUser({ ...currentUser, rol: userData.rol || "usuario" });
+          } else {
+            setUser({ ...currentUser, rol: "usuario" });
+          }
+          setLoading(false);
+        });
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();

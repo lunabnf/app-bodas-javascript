@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../AuthProvider';
 import { Navigate } from 'react-router-dom';
@@ -13,59 +13,60 @@ const Login = () => {
   const [error, setError] = useState('');
   const { user } = useAuth();
 
-  const [codigoInput, setCodigoInput] = useState('');
-  const [codigoIngresado, setCodigoIngresado] = useState(sessionStorage.getItem('codigoValido') === 'true');
+  // --- BLOQUE DE CÓDIGO DE ACCESO MANUAL ---
+  const [codigoInput, setCodigoInput] = useState("");
+  const [codigoIngresado, setCodigoIngresado] = useState(false);
+
+  const CODIGO_VALIDO = "LUIS2025"; // Código de acceso manual
+
+  useEffect(() => {
+    const codigoGuardado = sessionStorage.getItem("codigoValido");
+    if (codigoGuardado === "true") {
+      setCodigoIngresado(true);
+    }
+  }, []);
+
+  const handleCodigoSubmit = () => {
+    if (codigoInput === CODIGO_VALIDO) {
+      sessionStorage.setItem("codigoValido", "true");
+      setCodigoIngresado(true);
+    } else {
+      alert("Código incorrecto");
+    }
+  };
+  // --- FIN BLOQUE DE CÓDIGO DE ACCESO MANUAL ---
 
   const [modoRegistro, setModoRegistro] = useState(false);
   const [nombre, setNombre] = useState('');
   const [confirmarPassword, setConfirmarPassword] = useState('');
 
-  const manejarCodigo = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const docRef = doc(db, "config", "codigosBoda");
-      const docSnap = await getDoc(docRef);
-      const codigosValidos = docSnap.exists() ? docSnap.data().validos || [] : [];
-
-      if (codigosValidos.includes(codigoInput)) {
-        sessionStorage.setItem('codigoValido', 'true');
-        setCodigoIngresado(true);
-      } else {
-        setError('Código incorrecto. Inténtalo de nuevo.');
-      }
-    } catch (err) {
-      console.error("Error al verificar códigos:", err);
-      setError("Error al verificar el código.");
-    }
-  };
-
   if (user) {
     return <Navigate to="/home" />;
   }
 
+  // --- BLOQUEO POR CÓDIGO DE ACCESO MANUAL ---
   if (!codigoIngresado) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50">
-        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-bold text-pink-600 mb-4">Introduce el código de la boda</h2>
-          <form onSubmit={manejarCodigo}>
-            <input
-              type="text"
-              placeholder="Código de boda"
-              value={codigoInput}
-              onChange={(e) => setCodigoInput(e.target.value)}
-              className="w-full px-4 py-2 border rounded mb-4"
-            />
-            <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded">
-              Validar código
-            </button>
-          </form>
-          {error && <p className="text-red-500 mt-4">{error}</p>}
-        </div>
+      <div style={{ textAlign: "center", marginTop: "100px" }}>
+        <h2>Introduce el código de la boda</h2>
+        <input
+          type="text"
+          value={codigoInput}
+          onChange={(e) => setCodigoInput(e.target.value)}
+          placeholder="Código de la boda"
+          style={{ padding: "10px", fontSize: "16px" }}
+        />
+        <br />
+        <button
+          onClick={handleCodigoSubmit}
+          style={{ marginTop: "10px", padding: "10px 20px" }}
+        >
+          Acceder
+        </button>
       </div>
     );
   }
+  // --- FIN BLOQUEO POR CÓDIGO DE ACCESO MANUAL ---
 
 
   const handleSubmit = async (e) => {

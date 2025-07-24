@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
 
 const AdminPanel = () => {
   const [seccionActiva, setSeccionActiva] = useState("usuarios");
@@ -18,11 +18,11 @@ const AdminPanel = () => {
     };
 
     const fetchCodigo = async () => {
-      const configRef = doc(db, "config", "codigosBoda");
-      const configSnap = await getDoc(configRef);
-      if (configSnap.exists()) {
-        const codigos = configSnap.data().validos || [];
-        setCodigoActual(codigos);
+      const codigoRef = doc(db, "bodas", "bodaPrincipal");
+      const docSnap = await getDoc(codigoRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setCodigoActual([data.codigoAcceso || ""]);
       }
     };
 
@@ -93,18 +93,10 @@ const AdminPanel = () => {
                 const nuevoCodigo = e.target.elements.codigo.value.trim();
                 if (!nuevoCodigo) return;
 
-                const configRef = doc(db, "config", "codigosBoda");
-                const configSnap = await getDoc(configRef);
-                let codigos = configSnap.exists() ? configSnap.data().validos || [] : [];
-
-                if (!codigos.includes(nuevoCodigo)) {
-                  codigos.push(nuevoCodigo);
-                  await updateDoc(configRef, { validos: codigos }, { merge: true });
-                  setCodigoActual(codigos);
-                  alert("Código de boda añadido correctamente.");
-                } else {
-                  alert("Ese código ya existe.");
-                }
+                const codigoRef = doc(db, "bodas", "bodaPrincipal");
+                await setDoc(codigoRef, { codigoAcceso: nuevoCodigo }, { merge: true });
+                setCodigoActual([nuevoCodigo]);
+                alert("Código de boda añadido correctamente.");
 
                 e.target.reset();
               }}

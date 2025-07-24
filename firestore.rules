@@ -2,24 +2,24 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ✅ Permitir crear usuarios solo si están autenticados
+    // Usuarios: solo su propio documento
     match /usuarios/{usuarioId} {
       allow create: if request.auth != null && request.auth.uid == usuarioId;
       allow read, update: if request.auth != null && request.auth.uid == usuarioId;
     }
 
-    // ✅ Permitir lectura del código d
-    // e invitación
-    // Solo los administradores pueden editarlo
+    // Configuración general: lectura abierta, escritura solo admins
     match /config/{doc} {
       allow read: if true;
       allow write: if request.auth != null &&
         get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin";
     }
 
-    // ✅ Permitir acceso a datos de bodas si el usuario está autenticado
+    // Bodas: lectura para todos autenticados, escritura solo admins
     match /bodas/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin";
     }
   }
 }
